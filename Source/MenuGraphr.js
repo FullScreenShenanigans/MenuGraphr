@@ -135,6 +135,7 @@ var MenuGraphr;
                 }
             };
             this.GameStarter = settings.GameStarter;
+            this.killNormal = settings.killNormal;
             this.schemas = settings.schemas || {};
             this.aliases = settings.aliases || {};
             this.replacements = settings.replacements || {};
@@ -287,7 +288,7 @@ var MenuGraphr;
             if (child.name) {
                 delete this.menus[child.name];
             }
-            this.GameStarter.killNormal(child);
+            this.killNormal(child);
             this.deleteMenuChildren(name);
             if (child.onMenuDelete) {
                 child.onMenuDelete.call(this.GameStarter);
@@ -456,10 +457,10 @@ var MenuGraphr;
                 switch (word.command) {
                     case "padLeft":
                         if (word.length.constructor === String) {
-                            word = this.GameStarter.stringOf(" ", (this.filterWord(word.length).length - title.length)) + this.filterWord(title);
+                            word = this.stringOf(" ", (this.filterWord(word.length).length - title.length)) + this.filterWord(title);
                         }
                         else {
-                            word = this.GameStarter.stringOf(" ", word.length - title.length) + title;
+                            word = this.stringOf(" ", word.length - title.length) + title;
                         }
                         break;
                 }
@@ -876,7 +877,7 @@ var MenuGraphr;
         MenuGraphr.prototype.scrollCharacterUp = function (character, menu) {
             this.GameStarter.shiftVert(character, -this.GameStarter.unitsize);
             if (character.top < menu.top + (menu.textYOffset - 1) * this.GameStarter.unitsize) {
-                this.GameStarter.killNormal(character);
+                this.killNormal(character);
                 return true;
             }
         };
@@ -937,6 +938,17 @@ var MenuGraphr;
             else {
                 return typeof this.aliases[key] === "undefined" ? key : this.aliases[key];
             }
+        };
+        /**
+         * Creates a new String equivalent to an old String repeated any number of
+         * times. If times is 0, a blank String is returned.
+         *
+         * @param {String} str The characters to repeat.
+         * @param {Number} [times]   How many times to repeat (by default, 1).
+         */
+        MenuGraphr.prototype.stringOf = function (str, times) {
+            if (times === void 0) { times = 1; }
+            return (times === 0) ? '' : new Array(1 + (times)).join(str);
         };
         return MenuGraphr;
     })();
