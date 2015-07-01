@@ -62,9 +62,9 @@ module MenuGraphr {
     export class MenuGraphr {
         private GameStarter: GameStartr.IGameStartr;
 
-        private menus;
+        private menus: IMenusContainer;
 
-        private activeMenu;
+        private activeMenu: IMenu;
 
         private schemas;
 
@@ -78,7 +78,7 @@ module MenuGraphr {
 
         private replacementStatistics;
 
-        private killNormal;
+        private killNormal: IKillFunction;
 
         /**
          * 
@@ -160,7 +160,8 @@ module MenuGraphr {
                         "bottom": this.GameStarter.MapScreener.height,
                         "width": Math.ceil(this.GameStarter.MapScreener.width / this.GameStarter.unitsize),
                         "height": Math.ceil(this.GameStarter.MapScreener.height / this.GameStarter.unitsize),
-                        "GameStarter": this.GameStarter
+                        "GameStarter": this.GameStarter,
+                        "children": []
                     };
 
             this.deleteMenu(name);
@@ -607,7 +608,7 @@ module MenuGraphr {
          * 
          */
         continueMenu(name) {
-            var menu = this.getExistingMenu(name),
+            var menu = <IListMenu>this.getExistingMenu(name),
                 children = menu.children,
                 progress = menu.progress,
                 character, i;
@@ -656,7 +657,7 @@ module MenuGraphr {
          * 
          */
         addMenuList(name, settings) {
-            var menu = this.getExistingMenu(name),
+            var menu = <IListMenu>this.getExistingMenu(name),
                 options = settings.options instanceof Function
                     ? settings.options()
                     : settings.options,
@@ -854,8 +855,8 @@ module MenuGraphr {
          * 
          */
         activateMenuList(name) {
-            if (this.menus[name] && this.menus[name].arrow) {
-                this.menus[name].arrow.hidden = false;
+            if (this.menus[name] && (<IListMenu>this.menus[name]).arrow) {
+                (<IListMenu>this.menus[name]).arrow.hidden = false;
             }
         }
 
@@ -863,8 +864,8 @@ module MenuGraphr {
          * 
          */
         deactivateMenuList(name) {
-            if (this.menus[name] && this.menus[name].arrow) {
-                this.menus[name].arrow.hidden = true;
+            if (this.menus[name] && (<IListMenu>this.menus[name]).arrow) {
+                (<IListMenu>this.menus[name]).arrow.hidden = true;
             }
         }
 
@@ -872,14 +873,14 @@ module MenuGraphr {
          * 
          */
         getMenuSelectedIndex(name) {
-            return this.menus[name].selectedIndex;
+            return (<IListMenu>this.menus[name]).selectedIndex;
         }
 
         /**
          * 
          */
         getMenuSelectedOption(name) {
-            var menu = this.menus[name];
+            var menu = <IListMenu>this.menus[name];
 
             return menu.grid[menu.selectedIndex[0]][menu.selectedIndex[1]];
         }
@@ -888,7 +889,7 @@ module MenuGraphr {
          * 
          */
         shiftSelectedIndex(name, dx, dy) {
-            var menu = this.getExistingMenu(name),
+            var menu = <IListMenu>this.getExistingMenu(name),
                 textProperties = this.GameStarter.ObjectMaker.getPropertiesOf("Text"),
                 textWidth = textProperties.width * this.GameStarter.unitsize,
                 textHeight = textProperties.height * this.GameStarter.unitsize,
@@ -938,7 +939,7 @@ module MenuGraphr {
          * 
          */
         setSelectedIndex(name, x, y) {
-            var menu = this.getExistingMenu(name),
+            var menu = <IListMenu>this.getExistingMenu(name),
                 selectedIndex = menu.selectedIndex;
 
             this.shiftSelectedIndex(name, x - selectedIndex[0], y - selectedIndex[1]);
@@ -948,7 +949,7 @@ module MenuGraphr {
          * 
          */
         adjustVerticalScrollingListThings(name, dy, textPaddingY) {
-            var menu = this.getExistingMenu(name),
+            var menu = <IListMenu>this.getExistingMenu(name),
                 scrollingItems = menu.scrollingItems,
                 scrollingOld = menu.scrollingAmount,
                 offset = -dy * textPaddingY,
@@ -1051,16 +1052,18 @@ module MenuGraphr {
          * 
          */
         registerLeft() {
-            if (!this.activeMenu) {
+            var menu: IListMenu = <IListMenu>this.activeMenu;
+
+            if (!menu) {
                 return;
             }
 
-            if (this.activeMenu.selectedIndex) {
-                this.shiftSelectedIndex(this.activeMenu.name, -1, 0);
+            if (menu.selectedIndex) {
+                this.shiftSelectedIndex(menu.name, -1, 0);
             }
 
-            if (this.activeMenu.onLeft) {
-                this.activeMenu.onLeft(this.GameStarter);
+            if (menu.onLeft) {
+                menu.onLeft(this.GameStarter);
             }
         }
 
@@ -1068,16 +1071,18 @@ module MenuGraphr {
          * 
          */
         registerRight() {
-            if (!this.activeMenu) {
+            var menu: IListMenu = <IListMenu>this.activeMenu;
+
+            if (!menu) {
                 return;
             }
 
-            if (this.activeMenu.selectedIndex) {
-                this.shiftSelectedIndex(this.activeMenu.name, 1, 0);
+            if (menu.selectedIndex) {
+                this.shiftSelectedIndex(menu.name, 1, 0);
             }
 
-            if (this.activeMenu.onRight) {
-                this.activeMenu.onRight(this.GameStarter);
+            if (menu.onRight) {
+                menu.onRight(this.GameStarter);
             }
         }
 
@@ -1085,16 +1090,18 @@ module MenuGraphr {
          * 
          */
         registerUp = function () {
-            if (!this.activeMenu) {
+            var menu: IListMenu = <IListMenu>this.activeMenu;
+
+            if (!menu) {
                 return;
             }
 
-            if (this.activeMenu.selectedIndex) {
-                this.shiftSelectedIndex(this.activeMenu.name, 0, -1);
+            if (menu.selectedIndex) {
+                this.shiftSelectedIndex(menu.name, 0, -1);
             }
 
-            if (this.activeMenu.onUp) {
-                this.activeMenu.onUp(this.GameStarter);
+            if (menu.onUp) {
+                menu.onUp(this.GameStarter);
             }
         };
 
@@ -1102,16 +1109,18 @@ module MenuGraphr {
          * 
          */
         registerDown() {
-            if (!this.activeMenu) {
+            var menu: IListMenu = <IListMenu>this.activeMenu;
+
+            if (!menu) {
                 return;
             }
 
-            if (this.activeMenu.selectedIndex) {
-                this.shiftSelectedIndex(this.activeMenu.name, 0, 1);
+            if (menu.selectedIndex) {
+                this.shiftSelectedIndex(menu.name, 0, 1);
             }
 
-            if (this.activeMenu.onDown) {
-                this.activeMenu.onDown(this.GameStarter);
+            if (menu.onDown) {
+                menu.onDown(this.GameStarter);
             }
         }
 
@@ -1119,12 +1128,14 @@ module MenuGraphr {
          * 
          */
         registerA = function () {
-            if (!this.activeMenu || this.activeMenu.ignoreA) {
+            var menu: IListMenu = <IListMenu>this.activeMenu;
+
+            if (!menu || menu.ignoreA) {
                 return;
             }
 
-            if (this.activeMenu.callback) {
-                this.activeMenu.callback(this.activeMenu.name);
+            if (menu.callback) {
+                menu.callback(menu.name);
             }
         }
 
@@ -1132,27 +1143,29 @@ module MenuGraphr {
          * 
          */
         registerB = function () {
-            if (!this.activeMenu) {
+            var menu: IListMenu = <IListMenu>this.activeMenu;
+
+            if (!menu) {
                 return;
             }
 
-            if (this.activeMenu.progress && !this.activeMenu.ignoreProgressB) {
+            if (menu.progress && !menu.ignoreProgressB) {
                 return this.registerA();
             }
 
-            if (this.activeMenu.ignoreB) {
+            if (menu.ignoreB) {
                 return;
             }
 
-            if (this.activeMenu.onBPress) {
-                this.activeMenu.onBPress(this.activeMenu.name);
+            if (menu.onBPress) {
+                menu.onBPress(menu.name);
                 return;
             }
 
-            if (this.activeMenu.keepOnBack) {
-                this.setActiveMenu(this.activeMenu.backMenu);
+            if (menu.keepOnBack) {
+                this.setActiveMenu(menu.backMenu);
             } else {
-                this.deleteMenu(this.activeMenu.name);
+                this.deleteMenu(menu.name);
             }
         }
 
@@ -1160,12 +1173,14 @@ module MenuGraphr {
          * 
          */
         registerStart = function () {
-            if (!this.activeMenu) {
+            var menu: IListMenu = <IListMenu>this.activeMenu;
+
+            if (!menu) {
                 return;
             }
 
-            if (this.activeMenu.startMenu) {
-                this.setActiveMenu(this.activeMenu.startMenu);
+            if (menu.startMenu) {
+                this.setActiveMenu(menu.startMenu);
                 // } else if (activeMenu.callback) {
                 //     activeMenu.callback(activeMenu.name);
             }
@@ -1268,7 +1283,7 @@ module MenuGraphr {
          * @param {Number} [times]   How many times to repeat (by default, 1).
          */
         private stringOf(str: string, times: number = 1) {
-            return (times === 0) ? '' : new Array(1 + (times)).join(str);
+            return (times === 0) ? "" : new Array(1 + (times)).join(str);
         }
     }
 }

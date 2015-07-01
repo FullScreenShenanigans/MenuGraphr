@@ -78,60 +78,64 @@ var MenuGraphr;
              *
              */
             this.registerUp = function () {
-                if (!this.activeMenu) {
+                var menu = this.activeMenu;
+                if (!menu) {
                     return;
                 }
-                if (this.activeMenu.selectedIndex) {
-                    this.shiftSelectedIndex(this.activeMenu.name, 0, -1);
+                if (menu.selectedIndex) {
+                    this.shiftSelectedIndex(menu.name, 0, -1);
                 }
-                if (this.activeMenu.onUp) {
-                    this.activeMenu.onUp(this.GameStarter);
+                if (menu.onUp) {
+                    menu.onUp(this.GameStarter);
                 }
             };
             /**
              *
              */
             this.registerA = function () {
-                if (!this.activeMenu || this.activeMenu.ignoreA) {
+                var menu = this.activeMenu;
+                if (!menu || menu.ignoreA) {
                     return;
                 }
-                if (this.activeMenu.callback) {
-                    this.activeMenu.callback(this.activeMenu.name);
+                if (menu.callback) {
+                    menu.callback(menu.name);
                 }
             };
             /**
              *
              */
             this.registerB = function () {
-                if (!this.activeMenu) {
+                var menu = this.activeMenu;
+                if (!menu) {
                     return;
                 }
-                if (this.activeMenu.progress && !this.activeMenu.ignoreProgressB) {
+                if (menu.progress && !menu.ignoreProgressB) {
                     return this.registerA();
                 }
-                if (this.activeMenu.ignoreB) {
+                if (menu.ignoreB) {
                     return;
                 }
-                if (this.activeMenu.onBPress) {
-                    this.activeMenu.onBPress(this.activeMenu.name);
+                if (menu.onBPress) {
+                    menu.onBPress(menu.name);
                     return;
                 }
-                if (this.activeMenu.keepOnBack) {
-                    this.setActiveMenu(this.activeMenu.backMenu);
+                if (menu.keepOnBack) {
+                    this.setActiveMenu(menu.backMenu);
                 }
                 else {
-                    this.deleteMenu(this.activeMenu.name);
+                    this.deleteMenu(menu.name);
                 }
             };
             /**
              *
              */
             this.registerStart = function () {
-                if (!this.activeMenu) {
+                var menu = this.activeMenu;
+                if (!menu) {
                     return;
                 }
-                if (this.activeMenu.startMenu) {
-                    this.setActiveMenu(this.activeMenu.startMenu);
+                if (menu.startMenu) {
+                    this.setActiveMenu(menu.startMenu);
                 }
             };
             this.GameStarter = settings.GameStarter;
@@ -192,7 +196,8 @@ var MenuGraphr;
                 "bottom": this.GameStarter.MapScreener.height,
                 "width": Math.ceil(this.GameStarter.MapScreener.width / this.GameStarter.unitsize),
                 "height": Math.ceil(this.GameStarter.MapScreener.height / this.GameStarter.unitsize),
-                "GameStarter": this.GameStarter
+                "GameStarter": this.GameStarter,
+                "children": []
             };
             this.deleteMenu(name);
             this.menus[name] = menu;
@@ -831,42 +836,45 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.registerLeft = function () {
-            if (!this.activeMenu) {
+            var menu = this.activeMenu;
+            if (!menu) {
                 return;
             }
-            if (this.activeMenu.selectedIndex) {
-                this.shiftSelectedIndex(this.activeMenu.name, -1, 0);
+            if (menu.selectedIndex) {
+                this.shiftSelectedIndex(menu.name, -1, 0);
             }
-            if (this.activeMenu.onLeft) {
-                this.activeMenu.onLeft(this.GameStarter);
+            if (menu.onLeft) {
+                menu.onLeft(this.GameStarter);
             }
         };
         /**
          *
          */
         MenuGraphr.prototype.registerRight = function () {
-            if (!this.activeMenu) {
+            var menu = this.activeMenu;
+            if (!menu) {
                 return;
             }
-            if (this.activeMenu.selectedIndex) {
-                this.shiftSelectedIndex(this.activeMenu.name, 1, 0);
+            if (menu.selectedIndex) {
+                this.shiftSelectedIndex(menu.name, 1, 0);
             }
-            if (this.activeMenu.onRight) {
-                this.activeMenu.onRight(this.GameStarter);
+            if (menu.onRight) {
+                menu.onRight(this.GameStarter);
             }
         };
         /**
          *
          */
         MenuGraphr.prototype.registerDown = function () {
-            if (!this.activeMenu) {
+            var menu = this.activeMenu;
+            if (!menu) {
                 return;
             }
-            if (this.activeMenu.selectedIndex) {
-                this.shiftSelectedIndex(this.activeMenu.name, 0, 1);
+            if (menu.selectedIndex) {
+                this.shiftSelectedIndex(menu.name, 0, 1);
             }
-            if (this.activeMenu.onDown) {
-                this.activeMenu.onDown(this.GameStarter);
+            if (menu.onDown) {
+                menu.onDown(this.GameStarter);
             }
         };
         /* Utilities
@@ -948,7 +956,7 @@ var MenuGraphr;
          */
         MenuGraphr.prototype.stringOf = function (str, times) {
             if (times === void 0) { times = 1; }
-            return (times === 0) ? '' : new Array(1 + (times)).join(str);
+            return (times === 0) ? "" : new Array(1 + (times)).join(str);
         };
         return MenuGraphr;
     })();
