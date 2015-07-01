@@ -67,6 +67,41 @@ declare module MenuGraphr {
         y: any;
     }
 
+    export interface IMenuSchema {
+        backMenu?: string;
+        finishAutomatically?: boolean;
+        finishAutomaticSpeed?: number;
+        ignoreA?: boolean;
+        ignoreB?: boolean;
+        ignoreProgressB?: boolean;
+        keepOnBack?: boolean;
+        position?: IMenuSchemaPosition;
+        size?: IMenuSchemaSize;
+        startMenu?: string;
+        textAreaWidth?: number;
+        textArrowXOffset?: number;
+        textArrowYOffset?: number;
+        textHeight?: number;
+        textPaddingX?: number;
+        textPaddingY?: number;
+        textSpeed?: number;
+        textStartingX?: string;
+        textWidth?: number;
+        textWidthMultiplier?: number;
+        textXOffset?: number;
+        textYOffset?: number;
+    }
+
+    export interface IMenuSchemaSize {
+        width: number;
+        height: number;
+    }
+
+    export interface IMenuSchemaPosition {
+        horizontal?: string;
+        vertical?: string;
+    }
+
     export interface IKillFunction {
         (thing: GameStartr.IThing): void;
     }
@@ -74,12 +109,20 @@ declare module MenuGraphr {
     export interface IMenuGraphrSettings {
         GameStarter: GameStartr.IGameStartr;
         killNormal: IKillFunction;
-        schemas?: any;
-        aliases?: any;
-        replacements?: any;
+        schemas?: {
+            [i: string]: IMenuSchema;
+        };
+        aliases?: {
+            [i: string]: string;
+        };
+        replacements?: {
+            [i: string]: string;
+        };
         replacerKey?: string;
-        replaceFromItemsHolder?: any;
-        replacementStatistics?: any;
+        replaceFromItemsHolder?: boolean;
+        replacementStatistics?: {
+            [i: string]: boolean;
+        };
     }
 
     export interface IMenuGraphr {

@@ -66,17 +66,25 @@ module MenuGraphr {
 
         private activeMenu: IMenu;
 
-        private schemas;
+        private schemas: {
+            [i: string]: IMenuSchema;
+        };
 
-        private aliases;
+        private aliases: {
+            [i: string]: string
+        };
 
-        private replacements;
+        private replacements: {
+            [i: string]: string
+        };
 
-        private replacerKey;
+        private replacerKey: string;
 
-        private replaceFromItemsHolder;
+        private replaceFromItemsHolder: boolean;
 
-        private replacementStatistics;
+        private replacementStatistics: {
+            [i: string]: boolean
+        };
 
         private killNormal: IKillFunction;
 
