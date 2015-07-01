@@ -7,17 +7,20 @@ declare module MenuGraphr {
         backMenu?: string;
         callback?: (...args: any[]) => void;
         children: GameStartr.IThing[];
+        childrenSchemas: IMenuChildSchema[];
         finishAutomatically?: boolean;
         finishAutomaticSpeed?: number;
         ignoreA?: boolean;
         ignoreB?: boolean;
         ignoreProgressB?: boolean;
         keepOnBack?: boolean;
+        killOnB?: string[];
         onActive?: (name: string) => void;
         onBPress?: (name: string) => void;
         onDown?: (GameStartr: GameStartr.IGameStartr) => void;
         onInactive?: (name: string) => void;
         onLeft?: (GameStartr: GameStartr.IGameStartr) => void;
+        onMenuDelete?: (GameStartr: GameStartr.IGameStartr) => void;
         onRight?: (GameStartr: GameStartr.IGameStartr) => void;
         onUp?: (GameStartr: GameStartr.IGameStartr) => void;
         progress?: IMenuProgress;
@@ -52,7 +55,7 @@ declare module MenuGraphr {
         gridRows: number;
         options: any[];
         optionChildren: any;
-        progress: IMenuListProgress;
+        progress: IListMenuProgress;
         scrollingAmount?: number;
         scrollingAmountReal?: number;
         scrollingItems?: number;
@@ -60,7 +63,13 @@ declare module MenuGraphr {
         textColumnWidth: number;
     }
 
-    export interface IMenuListProgress extends IMenuProgress {
+    export interface IListMenuOptions {
+        bottom?: any;
+        options: any[]| { (): any[]; };
+        selectedIndex?: number[];
+    }
+
+    export interface IListMenuProgress extends IMenuProgress {
         words: any;
         i: any;
         x: any;
@@ -69,6 +78,7 @@ declare module MenuGraphr {
 
     export interface IMenuSchema {
         backMenu?: string;
+        container?: string;
         finishAutomatically?: boolean;
         finishAutomaticSpeed?: number;
         ignoreA?: boolean;
@@ -93,13 +103,72 @@ declare module MenuGraphr {
     }
 
     export interface IMenuSchemaSize {
-        width: number;
-        height: number;
+        width?: number;
+        height?: number;
     }
 
     export interface IMenuSchemaPosition {
         horizontal?: string;
+        offset?: IMenuSchemaPositionOffset;
+        relative?: boolean;
         vertical?: string;
+    }
+
+    export interface IMenuSchemaPositionOffset {
+        top?: number;
+        right?: number;
+        bottom?: number;
+        left?: number;
+    }
+
+    export interface IMenuChildSchema {
+        type: string;
+    }
+
+    export interface IMenuChildMenuSchema extends IMenuChildSchema {
+        attributes: IMenuSchema;
+        name: string;
+    }
+
+    export interface IMenuWordSchema extends IMenuChildSchema {
+        position: IMenuSchemaPosition;
+        size: IMenuSchemaSize;
+        words: string[];
+    }
+
+    export interface IMenuThingSchema extends IMenuChildSchema {
+        position: IMenuSchemaPosition;
+        size: IMenuSchemaSize;
+        thing: string;
+        args: any;
+    }
+
+    export interface IMenuWordFiltered {
+        command: string;
+        length?: number;
+        skipSpacing?: boolean;
+        word?: string;
+    }
+
+    export interface IMenuWordCommand extends IMenuWordFiltered {
+        applyUnitsize?: boolean;
+        attribute: string;
+        value: any;
+    }
+
+    export interface IMenuWordReset extends IMenuWordFiltered {
+        attribute: string;
+    }
+
+    export interface IMenuWordPosition extends IMenuWordFiltered {
+        x?: number;
+        y?: number;
+    }
+
+    export interface IMenuWordLength extends IMenuWordFiltered { }
+
+    export interface IText extends GameStartr.IThing {
+        paddingY: number;
     }
 
     export interface IKillFunction {
