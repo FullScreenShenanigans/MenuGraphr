@@ -195,6 +195,55 @@ declare module MenuGraphr {
     }
 
     export interface IMenuGraphr {
-
+        getMenus(): IMenusContainer;
+        getMenu(name: string): IMenu;
+        getExistingMenu(name: string): IMenu;
+        getAliases(): { [i: string]: string };
+        getReplacements(): { [i: string]: string };
+        createMenu(name: string, attributes: IMenuSchema): void;
+        createChild(name: string, schema: IMenuChildSchema): void;
+        createMenuWord(name: string, schema: IMenuWordSchema): void;
+        createMenuThing(name: string, schema: IMenuThingSchema): GameStartr.IThing;
+        hideMenu(name: string): void;
+        deleteMenu(name: string): void;
+        deleteActiveMenu(): void;
+        deleteMenuChild(child: IMenu): void;
+        deleteMenuChildren(name: string): void;
+        positionItem(
+            item: GameStartr.IThing,
+            size: IMenuSchemaSize,
+            position: IMenuSchemaPosition,
+            container: IMenu,
+            skipAdd?: boolean): void;
+        addMenuDialog(name: string, dialog?: any, onCompletion?: () => any): void;
+        addMenuText(name: string, words: string | string[], onCompletion?: (...args: any[]) => void): void;
+        addMenuWord(
+            name: string,
+            words: string[],
+            i: number,
+            x: number,
+            y: number,
+            onCompletion?: (...args: any[]) => void): GameStartr.IThing[];
+        continueMenu(name: string): void;
+        addMenuList(name: string, settings: IListMenuOptions): void;
+        activateMenuList(name: string): void;
+        deactivateMenuList(name: string): void;
+        getMenuSelectedIndex(name: string): number[];
+        getMenuSelectedOption(name: string): any;
+        shiftSelectedIndex(name: string, dx: number, dy: number): void;
+        setSelectedIndex(name: string, x: number, y: number): void;
+        adjustVerticalScrollingListThings(name: string, dy: number, textPaddingY: number): void;
+        selectMenuListOption(name: string): void;
+        setActiveMenu(name: string): void;
+        getActiveMenu(): IMenu;
+        getActiveMenuName(): string;
+        registerDirection(direction: number): void;
+        registerLeft(): void;
+        registerRight(): void;
+        registerUp(): void;
+        registerDown(): void;
+        registerA(): void;
+        registerB(): void;
+        registerStart(): void;
     }
 }

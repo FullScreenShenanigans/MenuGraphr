@@ -309,7 +309,7 @@ module MenuGraphr {
         /**
          * 
          */
-        deleteMenuChildren(name) {
+        deleteMenuChildren(name): void {
             var menu: IMenu = this.menus[name];
 
             if (menu && menu.children) {
@@ -324,8 +324,8 @@ module MenuGraphr {
             item: GameStartr.IThing,
             size: IMenuSchemaSize,
             position: IMenuSchemaPosition,
-            container,
-            skipAdd?) {
+            container: IMenu,
+            skipAdd?: boolean): void {
             var offset: IMenuSchemaPositionOffset,
                 i: number;
 
@@ -434,7 +434,7 @@ module MenuGraphr {
         /**
          * 
          */
-        addMenuText(name: string, words: string | string[], onCompletion?: (...args: any[]) => void) {
+        addMenuText(name: string, words: string | string[], onCompletion?: (...args: any[]) => void): void {
             var menu: IMenu = this.getExistingMenu(name),
                 x: number = this.GameStarter.getMidX(menu), // - menu.textAreaWidth / 2,
                 y: number = menu.top + menu.textYOffset * this.GameStarter.unitsize;
@@ -467,7 +467,7 @@ module MenuGraphr {
          * @todo The calculation of whether a word can fit assumes equal width for
          *       all children, although apostrophes are tiny.
          */
-        addMenuWord(name: string, words: string[], i: number, x: number, y: number, onCompletion?: (...args: any[]) => void) {
+        addMenuWord(name: string, words: string[], i: number, x: number, y: number, onCompletion?: (...args: any[]) => void): GameStartr.IThing[] {
             var menu: IMenu = this.getExistingMenu(name),
                 word: string | IMenuWordFiltered = this.filterWord(words[i]),
                 textProperties: any = this.GameStarter.ObjectMaker.getPropertiesOf("Text"),
