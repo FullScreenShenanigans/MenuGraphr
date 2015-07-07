@@ -1,55 +1,17 @@
-// @echo '/// <reference path="AudioPlayr-0.2.1.ts" />'
-// @echo '/// <reference path="ChangeLinr-0.2.0.ts" />'
 // @echo '/// <reference path="EightBittr-0.2.0.ts" />'
-// @echo '/// <reference path="FPSAnalyzr-0.2.1.ts" />'
-// @echo '/// <reference path="GamesRunnr-0.2.0.ts" />'
-// @echo '/// <reference path="GameStartr-0.2.0.ts" />'
 // @echo '/// <reference path="GroupHoldr-0.2.1.ts" />'
-// @echo '/// <reference path="InputWritr-0.2.0.ts" />'
-// @echo '/// <reference path="LevelEditr-0.2.0.ts" />'
-// @echo '/// <reference path="MapsCreatr-0.2.1.ts" />'
-// @echo '/// <reference path="MapScreenr-0.2.1.ts" />'
-// @echo '/// <reference path="MapsHandlr-0.2.0.ts" />'
-// @echo '/// <reference path="ModAttachr-0.2.2.ts" />'
-// @echo '/// <reference path="NumberMakr-0.2.2.ts" />'
-// @echo '/// <reference path="ObjectMakr-0.2.2.ts" />'
-// @echo '/// <reference path="PixelDrawr-0.2.0.ts" />'
-// @echo '/// <reference path="PixelRendr-0.2.0.ts" />'
-// @echo '/// <reference path="QuadsKeepr-0.2.1.ts" />'
 // @echo '/// <reference path="ItemsHoldr-0.2.1.ts" />'
-// @echo '/// <reference path="StringFilr-0.2.1.ts" />'
-// @echo '/// <reference path="ThingHittr-0.2.0.ts" />'
+// @echo '/// <reference path="MapScreenr-0.2.1.ts" />'
+// @echo '/// <reference path="ObjectMakr-0.2.2.ts" />'
 // @echo '/// <reference path="TimeHandlr-0.2.0.ts" />'
-// @echo '/// <reference path="TouchPassr-0.2.0.ts" />'
-// @echo '/// <reference path="WorldSeedr-0.2.0.ts" />'
-// @echo '/// <reference path="js_beautify.ts" />'
 
 // @ifdef INCLUDE_DEFINITIONS
-/// <reference path="References/AudioPlayr-0.2.1.ts" />
-/// <reference path="References/ChangeLinr-0.2.0.ts" />
 /// <reference path="References/EightBittr-0.2.0.ts" />
-/// <reference path="References/FPSAnalyzr-0.2.1.ts" />
-/// <reference path="References/GamesRunnr-0.2.0.ts" />
-/// <reference path="References/GameStartr-0.2.0.ts" />
 /// <reference path="References/GroupHoldr-0.2.1.ts" />
-/// <reference path="References/InputWritr-0.2.0.ts" />
-/// <reference path="References/LevelEditr-0.2.0.ts" />
-/// <reference path="References/MapsCreatr-0.2.1.ts" />
-/// <reference path="References/MapScreenr-0.2.1.ts" />
-/// <reference path="References/MapsHandlr-0.2.0.ts" />
-/// <reference path="References/ModAttachr-0.2.2.ts" />
-/// <reference path="References/NumberMakr-0.2.2.ts" />
-/// <reference path="References/ObjectMakr-0.2.2.ts" />
-/// <reference path="References/PixelDrawr-0.2.0.ts" />
-/// <reference path="References/PixelRendr-0.2.0.ts" />
-/// <reference path="References/QuadsKeepr-0.2.1.ts" />
 /// <reference path="References/ItemsHoldr-0.2.1.ts" />
-/// <reference path="References/StringFilr-0.2.1.ts" />
-/// <reference path="References/ThingHittr-0.2.0.ts" />
+/// <reference path="References/MapScreenr-0.2.1.ts" />
+/// <reference path="References/ObjectMakr-0.2.2.ts" />
 /// <reference path="References/TimeHandlr-0.2.0.ts" />
-/// <reference path="References/TouchPassr-0.2.0.ts" />
-/// <reference path="References/WorldSeedr-0.2.0.ts" />
-/// <reference path="References/js_beautify.ts" />
 /// <reference path="MenuGraphr.d.ts" />
 // @endif
 
@@ -60,7 +22,7 @@ module MenuGraphr {
      * 
      */
     export class MenuGraphr {
-        private GameStarter: GameStartr.IGameStartr;
+        private GameStarter: IGameStartr;
 
         private menus: IMenusContainer;
 
@@ -156,7 +118,7 @@ module MenuGraphr {
         /**
          * 
          */
-        createMenu(name: string, attributes: IMenuSchema): void {
+        createMenu(name: string, attributes?: IMenuSchema): void {
             var schemaRaw: IMenuSchema = this.GameStarter.proliferate({}, this.schemas[name]),
                 schema: IMenuSchema = this.GameStarter.proliferate(schemaRaw, attributes),
                 menu: IMenu = this.GameStarter.ObjectMaker.make("Menu", schema),
@@ -226,9 +188,9 @@ module MenuGraphr {
         /**
          * 
          */
-        createMenuThing(name: string, schema: IMenuThingSchema): GameStartr.IThing {
+        createMenuThing(name: string, schema: IMenuThingSchema): IThing {
             var menu: IMenu = this.getExistingMenu(name),
-                thing: GameStartr.IThing = this.GameStarter.ObjectMaker.make(schema.thing, schema.args);
+                thing: IThing = this.GameStarter.ObjectMaker.make(schema.thing, schema.args);
 
             this.positionItem(thing, schema.size, schema.position, menu);
 
@@ -321,7 +283,7 @@ module MenuGraphr {
          * 
          */
         positionItem(
-            item: GameStartr.IThing,
+            item: IThing,
             size: IMenuSchemaSize,
             position: IMenuSchemaPosition,
             container: IMenu,
@@ -467,11 +429,11 @@ module MenuGraphr {
          * @todo The calculation of whether a word can fit assumes equal width for
          *       all children, although apostrophes are tiny.
          */
-        addMenuWord(name: string, words: string[], i: number, x: number, y: number, onCompletion?: (...args: any[]) => void): GameStartr.IThing[] {
+        addMenuWord(name: string, words: string[], i: number, x: number, y: number, onCompletion?: (...args: any[]) => void): IThing[] {
             var menu: IMenu = this.getExistingMenu(name),
                 word: string | IMenuWordFiltered = this.filterWord(words[i]),
                 textProperties: any = this.GameStarter.ObjectMaker.getPropertiesOf("Text"),
-                things: GameStartr.IThing[] = [],
+                things: IThing[] = [],
                 textWidth: number,
                 textHeight: number,
                 textPaddingX: number,
@@ -703,8 +665,8 @@ module MenuGraphr {
                 optionChild: any,
                 schema: any,
                 title: string,
-                character: GameStartr.IThing,
-                column: GameStartr.IThing[],
+                character: IThing,
+                column: IThing[],
                 x: number,
                 i: number,
                 j: number,
@@ -1234,7 +1196,7 @@ module MenuGraphr {
         /**
          * 
          */
-        private scrollCharacterUp(character: GameStartr.IThing, menu: IMenu): boolean {
+        private scrollCharacterUp(character: IThing, menu: IMenu): boolean {
             this.GameStarter.shiftVert(character, -this.GameStarter.unitsize);
 
             if (character.top < menu.top + (menu.textYOffset - 1) * this.GameStarter.unitsize) {

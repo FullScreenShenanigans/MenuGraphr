@@ -1,12 +1,29 @@
 declare module MenuGraphr {
+    export interface IGameStartr extends EightBittr.IEightBittr {
+        GroupHolder: GroupHoldr.IGroupHoldr;
+        ItemsHolder: ItemsHoldr.IItemsHoldr;
+        MapScreener: MapScreenr.IMapScreenr;
+        ObjectMaker: ObjectMakr.IObjectMakr;
+        TimeHandler: TimeHandlr.ITimeHandlr;
+        addThing(thing: IThing | string | any[], left?: number, top?: number): IThing;
+        setHeight(thing: IThing, height: number);
+        setWidth(thing: IThing, width: number);
+    }
+
+    export interface IThing extends EightBittr.IThing {
+        name: string;
+        groupType: string;
+        hidden: boolean;
+    }
+
     export interface IMenusContainer {
         [i: string]: IMenu;
     }
 
-    export interface IMenu extends GameStartr.IThing {
+    export interface IMenu extends IThing {
         backMenu?: string;
         callback?: (...args: any[]) => void;
-        children: GameStartr.IThing[];
+        children: IThing[];
         childrenSchemas: IMenuChildSchema[];
         finishAutomatically?: boolean;
         finishAutomaticSpeed?: number;
@@ -17,12 +34,12 @@ declare module MenuGraphr {
         killOnB?: string[];
         onActive?: (name: string) => void;
         onBPress?: (name: string) => void;
-        onDown?: (GameStartr: GameStartr.IGameStartr) => void;
+        onDown?: (GameStartr: IGameStartr) => void;
         onInactive?: (name: string) => void;
-        onLeft?: (GameStartr: GameStartr.IGameStartr) => void;
-        onMenuDelete?: (GameStartr: GameStartr.IGameStartr) => void;
-        onRight?: (GameStartr: GameStartr.IGameStartr) => void;
-        onUp?: (GameStartr: GameStartr.IGameStartr) => void;
+        onLeft?: (GameStartr: IGameStartr) => void;
+        onMenuDelete?: (GameStartr: IGameStartr) => void;
+        onRight?: (GameStartr: IGameStartr) => void;
+        onUp?: (GameStartr: IGameStartr) => void;
         progress?: IMenuProgress;
         startMenu?: string;
         textAreaWidth?: number;
@@ -47,7 +64,7 @@ declare module MenuGraphr {
     }
 
     export interface IListMenu extends IMenu {
-        arrow: GameStartr.IThing;
+        arrow: IThing;
         arrowXOffset?: number;
         arrowYOffset?: number;
         grid: any[][];
@@ -167,16 +184,16 @@ declare module MenuGraphr {
 
     export interface IMenuWordLength extends IMenuWordFiltered { }
 
-    export interface IText extends GameStartr.IThing {
+    export interface IText extends IThing {
         paddingY: number;
     }
 
     export interface IKillFunction {
-        (thing: GameStartr.IThing): void;
+        (thing: IThing): void;
     }
 
     export interface IMenuGraphrSettings {
-        GameStarter: GameStartr.IGameStartr;
+        GameStarter: IGameStartr;
         killNormal: IKillFunction;
         schemas?: {
             [i: string]: IMenuSchema;
@@ -200,17 +217,17 @@ declare module MenuGraphr {
         getExistingMenu(name: string): IMenu;
         getAliases(): { [i: string]: string };
         getReplacements(): { [i: string]: string };
-        createMenu(name: string, attributes: IMenuSchema): void;
+        createMenu(name: string, attributes?: IMenuSchema): void;
         createChild(name: string, schema: IMenuChildSchema): void;
         createMenuWord(name: string, schema: IMenuWordSchema): void;
-        createMenuThing(name: string, schema: IMenuThingSchema): GameStartr.IThing;
+        createMenuThing(name: string, schema: IMenuThingSchema): IThing;
         hideMenu(name: string): void;
         deleteMenu(name: string): void;
         deleteActiveMenu(): void;
         deleteMenuChild(child: IMenu): void;
         deleteMenuChildren(name: string): void;
         positionItem(
-            item: GameStartr.IThing,
+            item: IThing,
             size: IMenuSchemaSize,
             position: IMenuSchemaPosition,
             container: IMenu,
@@ -223,7 +240,7 @@ declare module MenuGraphr {
             i: number,
             x: number,
             y: number,
-            onCompletion?: (...args: any[]) => void): GameStartr.IThing[];
+            onCompletion?: (...args: any[]) => void): IThing[];
         continueMenu(name: string): void;
         addMenuList(name: string, settings: IListMenuOptions): void;
         activateMenuList(name: string): void;
