@@ -6,6 +6,7 @@ declare module MenuGraphr {
         ObjectMaker: ObjectMakr.IObjectMakr;
         TimeHandler: TimeHandlr.ITimeHandlr;
         addThing(thing: IThing | string | any[], left?: number, top?: number): IThing;
+        killNormal(thing: IThing): void;
         setHeight(thing: IThing, height: number);
         setWidth(thing: IThing, width: number);
     }
@@ -188,13 +189,8 @@ declare module MenuGraphr {
         paddingY: number;
     }
 
-    export interface IKillFunction {
-        (thing: IThing): void;
-    }
-
     export interface IMenuGraphrSettings {
         GameStarter: IGameStartr;
-        killNormal: IKillFunction;
         schemas?: {
             [i: string]: IMenuSchema;
         };

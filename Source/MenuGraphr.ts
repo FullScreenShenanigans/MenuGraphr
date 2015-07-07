@@ -48,14 +48,11 @@ module MenuGraphr {
             [i: string]: boolean
         };
 
-        private killNormal: IKillFunction;
-
         /**
          * 
          */
         constructor(settings: IMenuGraphrSettings) {
             this.GameStarter = settings.GameStarter;
-            this.killNormal = settings.killNormal;
 
             this.schemas = settings.schemas || {};
             this.aliases = settings.aliases || {};
@@ -256,7 +253,7 @@ module MenuGraphr {
                 delete this.menus[child.name];
             }
 
-            this.killNormal(child);
+            this.GameStarter.killNormal(child);
             this.deleteMenuChildren(name);
 
             if (child.onMenuDelete) {
@@ -1200,7 +1197,7 @@ module MenuGraphr {
             this.GameStarter.shiftVert(character, -this.GameStarter.unitsize);
 
             if (character.top < menu.top + (menu.textYOffset - 1) * this.GameStarter.unitsize) {
-                this.killNormal(character);
+                this.GameStarter.killNormal(character);
                 return true;
             }
 
