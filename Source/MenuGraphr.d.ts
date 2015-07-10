@@ -155,10 +155,10 @@ declare module MenuGraphr {
     }
 
     export interface IMenuThingSchema extends IMenuChildSchema {
+        args: any;
         position: IMenuSchemaPosition;
         size: IMenuSchemaSize;
         thing: string;
-        args: any;
     }
 
     export interface IMenuWordFiltered {
