@@ -156,8 +156,8 @@ declare module MenuGraphr {
 
     export interface IMenuThingSchema extends IMenuChildSchema {
         args: any;
-        position: IMenuSchemaPosition;
-        size: IMenuSchemaSize;
+        position?: IMenuSchemaPosition;
+        size?: IMenuSchemaSize;
         thing: string;
     }
 
