@@ -128,6 +128,7 @@ module MenuGraphr {
                         "bottom": this.GameStarter.MapScreener.height,
                         "width": Math.ceil(this.GameStarter.MapScreener.width / this.GameStarter.unitsize),
                         "height": Math.ceil(this.GameStarter.MapScreener.height / this.GameStarter.unitsize),
+                        "EightBitter": this.GameStarter,
                         "GameStarter": this.GameStarter,
                         "children": []
                     };
