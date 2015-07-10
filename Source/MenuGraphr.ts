@@ -115,7 +115,7 @@ module MenuGraphr {
         /**
          * 
          */
-        createMenu(name: string, attributes?: IMenuSchema): void {
+        createMenu(name: string, attributes?: IMenuSchema): IMenu {
             var schemaRaw: IMenuSchema = this.GameStarter.proliferate({}, this.schemas[name]),
                 schema: IMenuSchema = this.GameStarter.proliferate(schemaRaw, attributes),
                 menu: IMenu = this.GameStarter.ObjectMaker.make("Menu", schema),
@@ -150,6 +150,8 @@ module MenuGraphr {
             }
 
             this.GameStarter.proliferate(menu, attributes);
+
+            return menu;
         }
 
         /**
