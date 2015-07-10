@@ -213,7 +213,7 @@ declare module MenuGraphr {
         getExistingMenu(name: string): IMenu;
         getAliases(): { [i: string]: string };
         getReplacements(): { [i: string]: string };
-        createMenu(name: string, attributes?: IMenuSchema): IThing;
+        createMenu(name: string, attributes?: IMenuSchema): IMenu;
         createChild(name: string, schema: IMenuChildSchema): void;
         createMenuWord(name: string, schema: IMenuWordSchema): void;
         createMenuThing(name: string, schema: IMenuThingSchema): IThing;
