@@ -16,6 +16,7 @@
 // @include ../Source/MenuGraphr.d.ts
 var MenuGraphr;
 (function (_MenuGraphr) {
+    "use strict";
     /**
      *
      */
@@ -114,6 +115,8 @@ var MenuGraphr;
                 case "thing":
                     this.createMenuThing(name, schema);
                     break;
+                default:
+                    throw new Error("Unknown schema type: " + schema.type);
             }
         };
         /**
@@ -202,7 +205,7 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.positionItem = function (item, size, position, container, skipAdd) {
-            var offset, i;
+            var offset;
             if (!position) {
                 position = {};
                 offset = {};
@@ -287,7 +290,7 @@ var MenuGraphr;
                 this.deleteMenuChildren(name);
                 this.addMenuDialog(name, dialog.slice(1), onCompletion);
                 return false;
-            });
+            }.bind(this));
         };
         /**
          *
@@ -306,7 +309,7 @@ var MenuGraphr;
             if (words.constructor === String) {
                 words = words.split(/ /);
             }
-            menu.callback = this.continueMenu;
+            menu.callback = this.continueMenu.bind(this);
             menu.textX = x;
             this.addMenuWord(name, words, 0, x, y, onCompletion);
         };
@@ -339,12 +342,16 @@ var MenuGraphr;
                             y += word.y;
                         }
                         break;
+                    default:
+                        throw new Error("Unknown word command: " + word.command);
                 }
             }
             // Numerics require any commands that should have affected the window 
             // to have already been applied
             textSpeed = menu.textSpeed;
-            textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize, textHeight = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize, textPaddingX = (menu.textPaddingX || textProperties.paddingX) * this.GameStarter.unitsize;
+            textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize;
+            textHeight = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize;
+            textPaddingX = (menu.textPaddingX || textProperties.paddingX) * this.GameStarter.unitsize;
             textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize;
             textWidthMultiplier = menu.textWidthMultiplier || 1;
             if (word.constructor === Object && word.command) {
@@ -358,6 +365,8 @@ var MenuGraphr;
                             word = this.stringOf(" ", word.length - title.length) + title;
                         }
                         break;
+                    default:
+                        throw new Error("Unknown word command: " + word.command);
                 }
             }
             if ((word.constructor === String && word !== "\n") || word.constructor === Array) {
@@ -445,7 +454,7 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.addMenuList = function (name, settings) {
-            var menu = this.getExistingMenu(name), options = settings.options.constructor === Function ? settings.options() : settings.options, left = menu.left + menu.textXOffset * this.GameStarter.unitsize, top = menu.top + menu.textYOffset * this.GameStarter.unitsize, textProperties = this.GameStarter.ObjectMaker.getPropertiesOf("Text"), textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize, textHeight = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize, textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize, arrowXOffset = (menu.arrowXOffset || 0) * this.GameStarter.unitsize, arrowYOffset = (menu.arrowYOffset || 0) * this.GameStarter.unitsize, selectedIndex = settings.selectedIndex || [0, 0], optionChildren = [], index = 0, y = top, option, optionChild, schema, title, character, column, x, i, j, k;
+            var menu = this.getExistingMenu(name), options = settings.options.constructor === Function ? settings.options() : settings.options, left = menu.left + menu.textXOffset * this.GameStarter.unitsize, top = menu.top + menu.textYOffset * this.GameStarter.unitsize, textProperties = this.GameStarter.ObjectMaker.getPropertiesOf("Text"), textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize, textHeight = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize, textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize, selectedIndex = settings.selectedIndex || [0, 0], optionChildren = [], index = 0, y = top, option, optionChild, schema, title, character, column, x, i, j;
             menu.options = options;
             menu.optionChildren = optionChildren;
             menu.callback = this.selectMenuListOption.bind(this);
@@ -617,7 +626,7 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.shiftSelectedIndex = function (name, dx, dy) {
-            var menu = this.getExistingMenu(name), textProperties = this.GameStarter.ObjectMaker.getPropertiesOf("Text"), textWidth = textProperties.width * this.GameStarter.unitsize, textHeight = textProperties.height * this.GameStarter.unitsize, textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize, option, x, y;
+            var menu = this.getExistingMenu(name), textProperties = this.GameStarter.ObjectMaker.getPropertiesOf("Text"), textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize, option, x, y;
             if (menu.scrollingItems) {
                 x = menu.selectedIndex[0] + dx;
                 y = menu.selectedIndex[1] + dy;
@@ -637,7 +646,7 @@ var MenuGraphr;
             if (x === menu.selectedIndex[0] && y === menu.selectedIndex[1]) {
                 return;
             }
-            //y = Math.min(menu.grid[x].length - 1, y);
+            // y = Math.min(menu.grid[x].length - 1, y);
             menu.selectedIndex[0] = x;
             menu.selectedIndex[1] = y;
             option = this.getMenuSelectedOption(name);
@@ -658,7 +667,7 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.adjustVerticalScrollingListThings = function (name, dy, textPaddingY) {
-            var menu = this.getExistingMenu(name), scrollingItems = menu.scrollingItems, scrollingOld = menu.scrollingAmount, offset = -dy * textPaddingY, scrollingNew, indexNew, option, optionChild, i, j;
+            var menu = this.getExistingMenu(name), scrollingOld = menu.scrollingAmount, offset = -dy * textPaddingY, option, optionChild, i, j;
             menu.scrollingAmount += dy;
             if (dy > 0) {
                 if (scrollingOld < menu.scrollingItems - 2) {
@@ -688,7 +697,7 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.selectMenuListOption = function (name) {
-            var menu = this.getExistingMenu(name), selected = this.getMenuSelectedOption(name);
+            var selected = this.getMenuSelectedOption(name);
             if (selected.callback) {
                 selected.callback(name);
             }
@@ -732,6 +741,8 @@ var MenuGraphr;
                     return this.registerDown();
                 case 3:
                     return this.registerLeft();
+                default:
+                    throw new Error("Unknown direction: " + direction);
             }
         };
         /**
@@ -902,17 +913,6 @@ var MenuGraphr;
                 }
             }
             return value;
-        };
-        /**
-         *
-         */
-        MenuGraphr.prototype.getAliasOf = function (key, forced) {
-            if (forced) {
-                return this.aliases[key];
-            }
-            else {
-                return typeof this.aliases[key] === "undefined" ? key : this.aliases[key];
-            }
         };
         /**
          * Creates a new String equivalent to an old String repeated any number of

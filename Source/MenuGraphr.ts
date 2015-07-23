@@ -18,6 +18,8 @@
 // @include ../Source/MenuGraphr.d.ts
 
 module MenuGraphr {
+    "use strict";
+
     /**
      * 
      */
@@ -161,7 +163,9 @@ module MenuGraphr {
         createChild(name: string, schema: IMenuChildSchema): void {
             switch (schema.type) {
                 case "menu":
-                    this.createMenu((<IMenuChildMenuSchema>schema).name,(<IMenuChildMenuSchema>schema).attributes);
+                    this.createMenu(
+                        (<IMenuChildMenuSchema>schema).name,
+                        (<IMenuChildMenuSchema>schema).attributes);
                     break;
                 case "text":
                     this.createMenuWord(name, <IMenuWordSchema>schema);
@@ -169,6 +173,8 @@ module MenuGraphr {
                 case "thing":
                     this.createMenuThing(name, <IMenuThingSchema>schema);
                     break;
+                default:
+                    throw new Error("Unknown schema type: " + schema.type);
             }
         }
 
@@ -182,7 +188,7 @@ module MenuGraphr {
             this.positionItem(container, schema.size, schema.position, menu, true);
 
             menu.textX = container.left;
-            this.addMenuWord(name, schema.words, 0, container.left, container.top)
+            this.addMenuWord(name, schema.words, 0, container.left, container.top);
         }
 
         /**
@@ -264,14 +270,14 @@ module MenuGraphr {
             }
 
             if (child.children) {
-                child.children.forEach(this.deleteMenuChild.bind(this))
+                child.children.forEach(this.deleteMenuChild.bind(this));
             }
         }
 
         /**
          * 
          */
-        deleteMenuChildren(name): void {
+        deleteMenuChildren(name: string): void {
             var menu: IMenu = this.menus[name];
 
             if (menu && menu.children) {
@@ -288,8 +294,7 @@ module MenuGraphr {
             position: IMenuSchemaPosition,
             container: IMenu,
             skipAdd?: boolean): void {
-            var offset: IMenuSchemaPositionOffset,
-                i: number;
+            var offset: IMenuSchemaPositionOffset;
 
             if (!position) {
                 position = {};
@@ -375,22 +380,25 @@ module MenuGraphr {
                 dialog = [String(dialog)];
             }
 
-            this.addMenuText(name, dialog[0], function (): boolean {
-                if (dialog.length === 1) {
-                    if (this.menus[name].deleteOnFinish) {
-                        this.deleteMenu(name);
+            this.addMenuText(
+                name,
+                dialog[0],
+                function (): boolean {
+                    if (dialog.length === 1) {
+                        if (this.menus[name].deleteOnFinish) {
+                            this.deleteMenu(name);
+                        }
+                        if (onCompletion) {
+                            return onCompletion();
+                        }
+                        return true;
                     }
-                    if (onCompletion) {
-                        return onCompletion();
-                    }
-                    return true;
-                }
 
-                this.deleteMenuChildren(name);
-                this.addMenuDialog(name, dialog.slice(1), onCompletion);
+                    this.deleteMenuChildren(name);
+                    this.addMenuDialog(name, dialog.slice(1), onCompletion);
 
-                return false;
-            });
+                    return false;
+                }.bind(this));
         }
 
         /**
@@ -417,7 +425,7 @@ module MenuGraphr {
                 words = (<string>words).split(/ /);
             }
 
-            menu.callback = this.continueMenu;
+            menu.callback = this.continueMenu.bind(this);
             menu.textX = x;
 
             this.addMenuWord(name, <string[]>words, 0, x, y, onCompletion);
@@ -441,7 +449,8 @@ module MenuGraphr {
                 textSpeed: number,
                 textWidthMultiplier: number,
                 title: string | IMenuWordFiltered,
-                character, j;
+                character: IText,
+                j: number;
 
             // First, filter for commands that affect the containing menu
             if (word.constructor === Object && (<IMenuWordFiltered>word).command) {
@@ -466,14 +475,17 @@ module MenuGraphr {
                             y += (<IMenuWordPosition>word).y;
                         }
                         break;
+
+                    default:
+                        throw new Error("Unknown word command: " + (<any>word).command);
                 }
             }
 
             // Numerics require any commands that should have affected the window 
             // to have already been applied
             textSpeed = menu.textSpeed;
-            textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize,
-            textHeight = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize,
+            textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize;
+            textHeight = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize;
             textPaddingX = (menu.textPaddingX || textProperties.paddingX) * this.GameStarter.unitsize;
             textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize;
             textWidthMultiplier = menu.textWidthMultiplier || 1;
@@ -494,10 +506,13 @@ module MenuGraphr {
                                 ) + this.filterWord(title);
                         } else {
                             word = this.stringOf(
-                                " ",(<any>word).length - (<any>title).length
-                                ) + title;
+                                " ",
+                                (<any>word).length - (<any>title).length) + title;
                         }
                         break;
+
+                    default:
+                        throw new Error("Unknown word command: " + (<any>word).command);
                 }
             }
 
@@ -655,12 +670,10 @@ module MenuGraphr {
                 textWidth: number = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize,
                 textHeight: number = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize,
                 textPaddingY: number = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize,
-                arrowXOffset: number = (menu.arrowXOffset || 0) * this.GameStarter.unitsize,
-                arrowYOffset: number = (menu.arrowYOffset || 0) * this.GameStarter.unitsize,
                 selectedIndex: number[] = settings.selectedIndex || [0, 0],
-                optionChildren = [],
-                index = 0,
-                y = top,
+                optionChildren: any[] = [],
+                index: number = 0,
+                y: number = top,
                 option: any,
                 optionChild: any,
                 schema: any,
@@ -669,8 +682,7 @@ module MenuGraphr {
                 column: IThing[],
                 x: number,
                 i: number,
-                j: number,
-                k: number;
+                j: number;
 
             menu.options = options;
             menu.optionChildren = optionChildren;
@@ -784,7 +796,7 @@ module MenuGraphr {
                 optionChild = {
                     "option": option,
                     "things": []
-                }
+                };
                 optionChildren.push(optionChild);
 
                 x = menu.left + (menu.textXOffset + option.position.left) * this.GameStarter.unitsize;
@@ -876,7 +888,7 @@ module MenuGraphr {
          * 
          */
         getMenuSelectedOption(name: string): any {
-            var menu = <IListMenu>this.menus[name];
+            var menu: IListMenu = <IListMenu>this.menus[name];
 
             return menu.grid[menu.selectedIndex[0]][menu.selectedIndex[1]];
         }
@@ -887,8 +899,6 @@ module MenuGraphr {
         shiftSelectedIndex(name: string, dx: number, dy: number): void {
             var menu: IListMenu = <IListMenu>this.getExistingMenu(name),
                 textProperties: any = this.GameStarter.ObjectMaker.getPropertiesOf("Text"),
-                textWidth: number = textProperties.width * this.GameStarter.unitsize,
-                textHeight: number = textProperties.height * this.GameStarter.unitsize,
                 textPaddingY: number = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize,
                 option: any,
                 x: number,
@@ -917,7 +927,7 @@ module MenuGraphr {
                 return;
             }
 
-            //y = Math.min(menu.grid[x].length - 1, y);
+            // y = Math.min(menu.grid[x].length - 1, y);
 
             menu.selectedIndex[0] = x;
             menu.selectedIndex[1] = y;
@@ -948,11 +958,8 @@ module MenuGraphr {
          */
         adjustVerticalScrollingListThings(name: string, dy: number, textPaddingY: number): void {
             var menu: IListMenu = <IListMenu>this.getExistingMenu(name),
-                scrollingItems: number = menu.scrollingItems,
                 scrollingOld: number = menu.scrollingAmount,
                 offset: number = -dy * textPaddingY,
-                scrollingNew: number,
-                indexNew: number,
                 option: any,
                 optionChild: any,
                 i: number,
@@ -994,8 +1001,7 @@ module MenuGraphr {
          * 
          */
         selectMenuListOption(name: string): void {
-            var menu: IListMenu = <IListMenu>this.getExistingMenu(name),
-                selected: any = this.getMenuSelectedOption(name);
+            var selected: any = this.getMenuSelectedOption(name);
 
             if (selected.callback) {
                 selected.callback(name);
@@ -1048,6 +1054,8 @@ module MenuGraphr {
                     return this.registerDown();
                 case 3:
                     return this.registerLeft();
+                default:
+                    throw new Error("Unknown direction: " + direction);
             }
         }
 
@@ -1221,7 +1229,7 @@ module MenuGraphr {
          * 
          */
         private filterWord(word: any): IMenuWordFiltered {
-            var start = 0,
+            var start: number = 0,
                 end: number,
                 inside: string;
 
@@ -1249,7 +1257,7 @@ module MenuGraphr {
          * 
          */
         private getReplacement(key: string): string {
-            var value = this.replacements[key];
+            var value: any = this.replacements[key];
 
             if (typeof value === "undefined") {
                 return value;
@@ -1266,17 +1274,6 @@ module MenuGraphr {
             }
 
             return value;
-        }
-
-        /**
-         * 
-         */
-        private getAliasOf(key: string, forced?: boolean): string {
-            if (forced) {
-                return this.aliases[key];
-            } else {
-                return typeof this.aliases[key] === "undefined" ? key : this.aliases[key];
-            }
         }
 
         /**
