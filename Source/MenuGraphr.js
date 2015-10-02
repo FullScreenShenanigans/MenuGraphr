@@ -15,7 +15,7 @@
 // @endif
 // @include ../Source/MenuGraphr.d.ts
 var MenuGraphr;
-(function (_MenuGraphr) {
+(function (MenuGraphr_1) {
     "use strict";
     /**
      *
@@ -75,17 +75,19 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.createMenu = function (name, attributes) {
-            var schemaRaw = this.GameStarter.proliferate({}, this.schemas[name]), schema = this.GameStarter.proliferate(schemaRaw, attributes), menu = this.GameStarter.ObjectMaker.make("Menu", schema), container = schema.container ? this.menus[schema.container] : {
-                "top": 0,
-                "left": 0,
-                "right": this.GameStarter.MapScreener.width,
-                "bottom": this.GameStarter.MapScreener.height,
-                "width": Math.ceil(this.GameStarter.MapScreener.width / this.GameStarter.unitsize),
-                "height": Math.ceil(this.GameStarter.MapScreener.height / this.GameStarter.unitsize),
-                "EightBitter": this.GameStarter,
-                "GameStarter": this.GameStarter,
-                "children": []
-            };
+            var schemaRaw = this.GameStarter.proliferate({}, this.schemas[name]), schema = this.GameStarter.proliferate(schemaRaw, attributes), menu = this.GameStarter.ObjectMaker.make("Menu", schema), container = schema.container
+                ? this.menus[schema.container]
+                : {
+                    "top": 0,
+                    "left": 0,
+                    "right": this.GameStarter.MapScreener.width,
+                    "bottom": this.GameStarter.MapScreener.height,
+                    "width": Math.ceil(this.GameStarter.MapScreener.width / this.GameStarter.unitsize),
+                    "height": Math.ceil(this.GameStarter.MapScreener.height / this.GameStarter.unitsize),
+                    "EightBitter": this.GameStarter,
+                    "GameStarter": this.GameStarter,
+                    "children": []
+                };
             this.deleteMenu(name);
             this.menus[name] = menu;
             menu.name = name;
@@ -296,7 +298,8 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.addMenuText = function (name, words, onCompletion) {
-            var menu = this.getExistingMenu(name), x = this.GameStarter.getMidX(menu), y = menu.top + menu.textYOffset * this.GameStarter.unitsize;
+            var menu = this.getExistingMenu(name), x = this.GameStarter.getMidX(menu), // - menu.textAreaWidth / 2,
+            y = menu.top + menu.textYOffset * this.GameStarter.unitsize;
             switch (menu.textStartingX) {
                 case "right":
                     x += menu.textAreaWidth / 2;
@@ -357,9 +360,11 @@ var MenuGraphr;
             if (word.constructor === Object && word.command) {
                 title = this.filterWord(this.getCharacterEquivalent(word.word));
                 switch (word.command) {
+                    // Length may be a String (for its length) or a direct number
                     case "padLeft":
                         if (word.length.constructor === String) {
-                            word = this.stringOf(" ", (this.filterWord(word.length).length - title.length)) + this.filterWord(title);
+                            word = this.stringOf(" ", (this.filterWord(word.length).length
+                                - title.length)) + this.filterWord(title);
                         }
                         else {
                             word = this.stringOf(" ", word.length - title.length) + title;
@@ -369,7 +374,8 @@ var MenuGraphr;
                         throw new Error("Unknown word command: " + word.command);
                 }
             }
-            if ((word.constructor === String && word !== "\n") || word.constructor === Array) {
+            if ((word.constructor === String && word !== "\n")
+                || word.constructor === Array) {
                 for (j = 0; j < word.length; j += 1) {
                     if (word[j] !== " ") {
                         title = "Char" + this.getCharacterEquivalent(word[j]);
@@ -401,7 +407,11 @@ var MenuGraphr;
                 return things;
             }
             if (!word.skipSpacing) {
-                if (word === "\n" || (x + ((this.filterWord(words[i + 1]).length + .5) * textWidthMultiplier * textWidth + menu.textXOffset * this.GameStarter.unitsize) > this.GameStarter.getMidX(menu) + menu.textAreaWidth / 2)) {
+                if (word === "\n"
+                    || (x + ((this.filterWord(words[i + 1]).length + .5)
+                        * textWidthMultiplier * textWidth
+                        + menu.textXOffset * this.GameStarter.unitsize)
+                        > this.GameStarter.getMidX(menu) + menu.textAreaWidth / 2)) {
                     x = menu.textX;
                     y += textPaddingY;
                 }
@@ -454,7 +464,9 @@ var MenuGraphr;
          *
          */
         MenuGraphr.prototype.addMenuList = function (name, settings) {
-            var menu = this.getExistingMenu(name), options = settings.options.constructor === Function ? settings.options() : settings.options, left = menu.left + menu.textXOffset * this.GameStarter.unitsize, top = menu.top + menu.textYOffset * this.GameStarter.unitsize, textProperties = this.GameStarter.ObjectMaker.getPropertiesOf("Text"), textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize, textHeight = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize, textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize, selectedIndex = settings.selectedIndex || [0, 0], optionChildren = [], index = 0, y = top, option, optionChild, schema, title, character, column, x, i, j;
+            var menu = this.getExistingMenu(name), options = settings.options.constructor === Function
+                ? settings.options()
+                : settings.options, left = menu.left + menu.textXOffset * this.GameStarter.unitsize, top = menu.top + menu.textYOffset * this.GameStarter.unitsize, textProperties = this.GameStarter.ObjectMaker.getPropertiesOf("Text"), textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize, textHeight = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize, textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize, selectedIndex = settings.selectedIndex || [0, 0], optionChildren = [], index = 0, y = top, option, optionChild, schema, title, character, column, x, i, j;
             menu.options = options;
             menu.optionChildren = optionChildren;
             menu.callback = this.selectMenuListOption.bind(this);
@@ -548,6 +560,8 @@ var MenuGraphr;
                 y = menu.top + (menu.textYOffset + option.position.top) * this.GameStarter.unitsize;
                 option.x = x;
                 option.y = y;
+                // Copy & pasted from the above options loop
+                // To do: make this into its own helper function?
                 for (j = 0; j < schema.length; j += 1) {
                     if (schema[j].command) {
                         if (schema[j].x) {
@@ -684,7 +698,8 @@ var MenuGraphr;
                 option.y += offset;
                 for (j = 0; j < optionChild.things.length; j += 1) {
                     this.GameStarter.shiftVert(optionChild.things[j], offset);
-                    if (i < menu.scrollingAmountReal || i >= menu.scrollingItems + menu.scrollingAmountReal) {
+                    if (i < menu.scrollingAmountReal
+                        || i >= menu.scrollingItems + menu.scrollingAmountReal) {
                         optionChild.things[j].hidden = true;
                     }
                     else {
@@ -927,5 +942,5 @@ var MenuGraphr;
         };
         return MenuGraphr;
     })();
-    _MenuGraphr.MenuGraphr = MenuGraphr;
+    MenuGraphr_1.MenuGraphr = MenuGraphr;
 })(MenuGraphr || (MenuGraphr = {}));
