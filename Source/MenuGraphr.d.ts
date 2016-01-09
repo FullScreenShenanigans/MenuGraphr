@@ -11,6 +11,7 @@ declare module MenuGraphr {
     }
 
     export interface IThing extends EightBittr.IThing {
+        GameStarter: IGameStartr;
         name: string;
         groupType: string;
         hidden: boolean;
@@ -42,7 +43,7 @@ declare module MenuGraphr {
         gridColumns: number;
         gridRows: number;
         height: number;
-        options: any[];
+        options: IGridCell[];
         optionChildren: any;
         progress: IListMenuProgress;
 
@@ -62,6 +63,7 @@ declare module MenuGraphr {
     }
 
     export interface IGridCell {
+        callback?: (...args: any[]) => void;
         column: IGridCell[];
         columnNumber: number;
         index: number;
@@ -113,6 +115,10 @@ declare module MenuGraphr {
         onRight?: (GameStartr: IGameStartr) => void;
         onUp?: (GameStartr: IGameStartr) => void;
         size?: IMenuSchemaSize;
+
+        /**
+         * A menu to set as active if the start button is pressed while this menu is active.
+         */
         startMenu?: string;
         textAreaWidth?: number;
         textArrowXOffset?: number;
@@ -127,6 +133,13 @@ declare module MenuGraphr {
         textXOffset?: number;
         textYOffset?: number;
         width?: number;
+    }
+
+    /**
+     * Known menu schemas, keyed by name.
+     */
+    export interface IMenuSchemas {
+        [i: string]: IMenuSchema;
     }
 
     export interface IMenuSchema extends IMenuBase {
@@ -157,10 +170,13 @@ declare module MenuGraphr {
         left?: number;
     }
 
+    /**
+     * A description of a menu child to create, including name and child type.
+     */
     export interface IMenuChildSchema extends IMenuSchema {
         name?: string;
         type: string;
-        words?: MenuDialogRaw;
+        words?: IMenuDialogRaw;
     }
 
     export interface IMenuChildMenuSchema extends IMenuChildSchema {
@@ -186,7 +202,12 @@ declare module MenuGraphr {
         word?: string;
     }
 
-    export type MenuDialogRaw = string | (string | string[] | (string | string[])[] | IMenuWordFiltered)[]
+    /**
+     * Various raw forms of dialog that may be used. A single String is common
+     * for short dialogs, and longer ones may use a String for each word or character,
+     * as well as filtered Objects.
+     */
+    export type IMenuDialogRaw = string | (string | string[] | (string | string[])[] | IMenuWordFiltered)[]
 
     export interface IMenuWordCommand extends IMenuWordFiltered {
         applyUnitsize?: boolean;
@@ -214,6 +235,16 @@ declare module MenuGraphr {
         paddingY: number;
     }
 
+    /**
+     * Alternate Thing titles for characters, such as " " for "space".
+     */
+    export interface IAliases {
+        [i: string]: string;
+    }
+
+    /**
+     * Programmatic replacements for deliniated words.
+     */
     export interface IReplacements {
         [i: string]: string[] | IReplacerFunction;
     }
@@ -222,61 +253,41 @@ declare module MenuGraphr {
         (GameStarter: IGameStartr): string[];
     }
 
+    /**
+     * Settings to initialize a new IMenuGraphr.
+     */
     export interface IMenuGraphrSettings {
+        /**
+         * The parent IGameStartr managing Things.
+         */
         GameStarter: IGameStartr;
-        schemas?: {
-            [i: string]: IMenuSchema;
-        };
-        aliases?: {
-            [i: string]: string;
-        };
+
+        /**
+         * Known menu schemas, keyed by name.
+         */
+        schemas?: IMenuSchemas;
+
+        /**
+         * Alternate Thing titles for charactes, such as " " for "space".
+         */
+        aliases?: IAliases;
+
+        /**
+         * Programmatic replacements for deliniated words.
+         */
         replacements?: IReplacements;
+
+        /**
+         * The separator for words to replace using replacements.
+         */
         replacerKey?: string;
     }
 
+    /**
+     * A menu management sysstem. Menus can have dialog-style text, scrollable
+     * and unscrollable grids, and children menus or decorations added.
+     */
     export interface IMenuGraphr {
-        getMenus(): IMenusContainer;
-        getMenu(name: string): IMenu;
-        getExistingMenu(name: string): IMenu;
-        getAliases(): { [i: string]: string };
-        getReplacements(): IReplacements;
-        createMenu(name: string, attributes?: IMenuSchema): IMenu;
-        createMenuChild(name: string, schema: IMenuChildSchema): void;
-        createMenuWord(name: string, schema: IMenuWordSchema): void;
-        createMenuThing(name: string, schema: IMenuThingSchema): IThing;
-        hideMenu(name: string): void;
-        deleteMenu(name: string): void;
-        deleteActiveMenu(): void;
-        deleteMenuChild(child: IMenu): void;
-        deleteMenuChildren(name: string): void;
-        positionItem(
-            item: IThing,
-            size: IMenuSchemaSize,
-            position: IMenuSchemaPosition,
-            container: IMenu,
-            skipAdd?: boolean): void;
-        addMenuDialog(name: string, dialogRaw: MenuDialogRaw, onCompletion?: () => any): void;
-        addMenuText(name: string, words: (string[] | IMenuWordCommand)[], onCompletion?: (...args: any[]) => void): void;
-        continueMenu(name: string): void;
-        addMenuList(name: string, settings: IListMenuOptions): void;
-        activateMenuList(name: string): void;
-        deactivateMenuList(name: string): void;
-        getMenuSelectedIndex(name: string): number[];
-        getMenuSelectedOption(name: string): any;
-        shiftSelectedIndex(name: string, dx: number, dy: number): void;
-        setSelectedIndex(name: string, x: number, y: number): void;
-        adjustVerticalScrollingListThings(name: string, dy: number, textPaddingY: number): void;
-        selectMenuListOption(name: string): void;
-        setActiveMenu(name: string): void;
-        getActiveMenu(): IMenu;
-        getActiveMenuName(): string;
-        registerDirection(direction: number): void;
-        registerLeft(): void;
-        registerRight(): void;
-        registerUp(): void;
-        registerDown(): void;
-        registerA(): void;
-        registerB(): void;
-        registerStart(): void;
+
     }
 }
