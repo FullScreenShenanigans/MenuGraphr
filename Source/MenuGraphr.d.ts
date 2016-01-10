@@ -539,7 +539,7 @@ declare module MenuGraphr {
         /**
          * Descriptions of the options, with their grid cell and Things.
          */
-        optionChildren: IOptionChild[];
+        optionChildren: any[];
 
         /**
          * A summary of the menu's progress through its list.
@@ -627,17 +627,18 @@ declare module MenuGraphr {
         y: number;
     }
 
-    export interface IOptionChild {
-        option: IGridCell;
+    /**
+     * Settings to create a new list menu.
+     */
+    export interface IListMenuOptions {
+        /**
+         * A bottom option to place below all grid options.
+         */
+        bottom?: any;
 
         /**
-         * Things that visually represent this child and its option.
+         * Options within the menu, or a Function to generate them.
          */
-        things: GameStartr.IThing[];
-    }
-
-    export interface IListMenuOptions {
-        bottom?: any;
         options: any[] | {
             (): any[];
         };
@@ -648,10 +649,28 @@ declare module MenuGraphr {
         selectedIndex?: [number, number];
     }
 
+    /**
+     * A summary of the menu's progress through its list.
+     */
     export interface IListMenuProgress extends IMenuProgress {
+        /**
+         * The current words in the list.
+         */
         words: any;
+
+        /**
+         * The index of the currently selected option.
+         */
         i: any;
+
+        /**
+         * The horizontal position of the currently selected option.
+         */
         x: any;
+
+        /**
+         * The vertical position of the currently selected option.
+         */
         y: any;
     }
 
@@ -669,6 +688,9 @@ declare module MenuGraphr {
         [i: string]: string[] | IReplacerFunction;
     }
 
+    /**
+     * A Function to generate a word replacement based on the GameStarter's state.
+     */
     export interface IReplacerFunction {
         (GameStarter: GameStartr.IGameStartr): string[];
     }
@@ -708,6 +730,202 @@ declare module MenuGraphr {
      * and unscrollable grids, and children menus or decorations added.
      */
     export interface IMenuGraphr {
+        /**
+         * @returns All available menus, keyed by name.
+         */
+        getMenus(): IMenusContainer;
 
+        /**
+         * @param name   A name of a menu.
+         * @returns The menu under the given name.
+         */
+        getMenu(name: string): IMenu;
+
+        /**
+         * Returns a menu, throwing an error if it doesn't exist.
+         * 
+         * @param name   A name of a menu.
+         * @returns The menu under the given name.
+         */
+        getExistingMenu(name: string): IMenu;
+
+        /**
+         * @returns The currently active menu.
+         */
+        getActiveMenu(): IMenu;
+
+        /**
+         * @returns The name of the currently active menu.
+         */
+        getActiveMenuName(): string;
+
+        /**
+         * @returns The alternate Thing titles for characters.
+         */
+        getAliases(): IAliases;
+
+        /**
+         * @returns The programmatic replacements for deliniated words.
+         */
+        getReplacements(): IReplacements;
+
+        /**
+         * Creates a menu with the given name and attributes, and stores it under the name.
+         * Default information is used from the schema of that name, such as position and
+         * children, but may be override by attributes.
+         * 
+         * @param name   The name of the menu.
+         * @param attributes   Custom attributes to apply to the menu.
+         * @returns The newly created menu.
+         */
+        createMenu(name: string, attributes?: IMenuSchema): IMenu;
+
+        /**
+         * Adds a child object to an existing menu.
+         * 
+         * @param name   The name of the existing menu.
+         * @param schema   Settings for the child, including name and child type.
+         * @returns The newly created Thing or Things.
+         * @remarks Creating a menu is done using this.createMenu, so the created menu might
+         *          not mark itself as a child of the parent.
+         */
+        createMenuChild(name: string, schema: IMenuChildSchema): GameStartr.IThing | GameStartr.IThing[];
+
+        /**
+         * Creates a series of words as a child of a menu.
+         * 
+         * @param name   The name of the menu.
+         * @param schema   Settings for the words.
+         * @returns The words' character Things.
+         */
+        createMenuWord(name: string, schema: IMenuWordSchema): GameStartr.IThing[];
+
+        /**
+         * Creates a Thing as a child of a menu.
+         * 
+         * @param name   The name of the menu.
+         * @param schema   Settings for the Thing.
+         * @returns The newly created Thing.
+         */
+        createMenuThing(name: string, schema: IMenuThingSchema): GameStartr.IThing;
+
+        /**
+         * Hides a menu of the given name and deletes its children, if it exists.
+         * 
+         * @param name   The name of the menu to hide.
+         */
+        hideMenu(name: string): void;
+
+        /**
+         * Deletes a menu of the given name, if it exists.
+         * 
+         * @param name   The name of the menu to delete.
+         */
+        deleteMenu(name: string): void;
+
+        /**
+         * Deletes the active menu, if it exists.
+         */
+        deleteActiveMenu(): void;
+
+        /**
+         * Adds dialog-style text to a menu. If the text overflows, 
+         * 
+         * @param name   The name of the menu.
+         * @param dialog   Raw dialog to add to the menu.
+         * @param onCompletion   An optional callback for when the text is done.
+         */
+        addMenuDialog(name: string, dialog: IMenuDialogRaw, onCompletion?: () => any): void;
+
+        /**
+         * Continues a menu from its current display words to the next line.
+         * 
+         * @param name    The name of the menu.
+         */
+        continueMenu(name: string): void;
+
+        /**
+         * Adds a list of text options to a menu.
+         * 
+         * @param name   The name of the menu.
+         * @param settings   Settings for the list, particularly its options, starting
+         *                   index, and optional floating bottom.
+         */
+        addMenuList(name: string, settings: IListMenuOptions): void;
+
+        /**
+         * Retrives the currently selected grid cell of a menu.
+         * 
+         * @param name   The name of the menu.
+         * @returns The currently selected grid cell of the menu.
+         */
+        getMenuSelectedOption(name: string): IGridCell;
+
+        /**
+         * Shifts the selected index of a list menu, adjusting for scrolling if necessary.
+         * 
+         * @param name   The name of the menu.
+         * @param dx   How far along the menu's grid to shift horizontally.
+         * @param dy   How far along the menu's grid to shift vertically.
+         */
+        shiftSelectedIndex(name: string, dx: number, dy: number): void;
+
+        /**
+         * Sets the current selected index of a menu.
+         * 
+         * @param name   The name of the menu.
+         * @param x   The new horizontal value for the index.
+         * @param y   The new vertical value for the index.
+         */
+        setSelectedIndex(name: string, x: number, y: number): void;
+
+        /**
+         * Sets the currently active menu.
+         * 
+         * @param name   The name of the menu to set as active.
+         */
+        setActiveMenu(name: string): void;
+
+        /**
+         * Reacts to a user event directing in the given direction.
+         * 
+         * @param direction   The direction of the interaction.
+         */
+        registerDirection(direction: Direction): void;
+
+        /**
+         * Reacts to a user event directing up.
+         */
+        registerUp(): void;
+
+        /**
+         * Reacts to a user event directing to the right.
+         */
+        registerRight(): void;
+
+        /**
+         * Reacts to a user event directing down.
+         */
+        registerDown(): void;
+
+        /**
+         * Reacts to a user event directing to the left.
+         */
+        registerLeft(): void;
+
+        /**
+         * Reacts to a user event from pressing a selection key.
+         */
+        registerA(): void;
+
+        /**
+         * Reacts to a user event from pressing a deselection key.
+         */
+        registerB(): void;
+
+        /**
+         * Reacts to a user event from pressing a start key.
+         */
+        registerStart(): void;
     }
 }

@@ -418,7 +418,7 @@ module MenuGraphr {
                 index: number = 0,
                 y: number = top,
                 option: any,
-                optionChild: IOptionChild,
+                optionChild: any,
                 schema: any,
                 title: string,
                 character: GameStartr.IThing,
