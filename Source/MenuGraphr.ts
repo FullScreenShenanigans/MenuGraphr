@@ -505,7 +505,7 @@ module MenuGraphr {
                                     y += schema[j][k].y * this.GameStarter.unitsize;
                                 }
                             } else {
-                                title = "Char" + this.getCharacterEquivalent(schema[j][k]);
+                                option.title = title = "Char" + this.getCharacterEquivalent(schema[j][k]);
                                 character = this.GameStarter.ObjectMaker.make(title);
                                 menu.children.push(character);
                                 optionChild.things.push(character);
@@ -561,7 +561,7 @@ module MenuGraphr {
                                 y += schema[j][k].y * this.GameStarter.unitsize;
                             }
                         } else if (schema[j][k] !== " ") {
-                            title = "Char" + this.getCharacterEquivalent(schema[j][k]);
+                            option.title = title = "Char" + this.getCharacterEquivalent(schema[j][k]);
                             character = this.GameStarter.ObjectMaker.make(title);
                             menu.children.push(character);
                             optionChild.things.push(character);
@@ -617,7 +617,7 @@ module MenuGraphr {
         getMenuSelectedOption(name: string): IGridCell {
             var menu: IListMenu = <IListMenu>this.getExistingMenu(name);
 
-            if (!menu.grid || menu.selectedIndex) {
+            if (!menu.grid || !menu.selectedIndex) {
                 throw new Error("The " + name + " menu does not behave like a list menu.");
             }
 
@@ -714,7 +714,7 @@ module MenuGraphr {
          * 
          * @param direction   The direction of the interaction.
          */
-        registerDirection(direction: Direction): void {
+        registerDirection(direction: number): void {
             switch (direction) {
                 case Direction.Top:
                     return this.registerUp();

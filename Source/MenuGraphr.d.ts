@@ -372,12 +372,12 @@ declare module MenuGraphr {
         /**
          * How to position the word within the menu.
          */
-        position: IMenuSchemaPosition;
+        position?: IMenuSchemaPosition;
 
         /**
          * A description of the word area's size.
          */
-        size: IMenuSchemaSize;
+        size?: IMenuSchemaSize;
 
         /**
          * Raw words to set as the text contents.
@@ -604,7 +604,12 @@ declare module MenuGraphr {
         /**
          * Text to display to represent this option.
          */
-        text: IMenuDialogRaw;
+        text: (string | IMenuWordCommand)[];
+
+        /**
+         * Optionally, an equivalent title that represents this option.
+         */
+        title?: string;
 
         /**
          * Floating texts that should be added with the option.
@@ -615,6 +620,11 @@ declare module MenuGraphr {
          * Things that visually represent this option.
          */
         things: GameStartr.IThing[];
+
+        /**
+         * Optionally, some value represented by this option.
+         */
+        value?: any;
 
         /**
          * A horizontal left edge for this option's area.
