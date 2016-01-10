@@ -1,17 +1,7 @@
-// @echo '/// <reference path="EightBittr-0.2.0.ts" />'
-// @echo '/// <reference path="GroupHoldr-0.2.1.ts" />'
-// @echo '/// <reference path="ItemsHoldr-0.2.1.ts" />'
-// @echo '/// <reference path="MapScreenr-0.2.1.ts" />'
-// @echo '/// <reference path="ObjectMakr-0.2.2.ts" />'
-// @echo '/// <reference path="TimeHandlr-0.2.0.ts" />'
+// @echo '/// <reference path="GameStartr-0.2.0.ts" />'
 
 // @ifdef INCLUDE_DEFINITIONS
-/// <reference path="References/EightBittr-0.2.0.ts" />
-/// <reference path="References/GroupHoldr-0.2.1.ts" />
-/// <reference path="References/ItemsHoldr-0.2.1.ts" />
-/// <reference path="References/MapScreenr-0.2.1.ts" />
-/// <reference path="References/ObjectMakr-0.2.2.ts" />
-/// <reference path="References/TimeHandlr-0.2.0.ts" />
+/// <reference path="References/GameStartr-0.2.0.ts" />
 /// <reference path="MenuGraphr.d.ts" />
 // @endif
 
@@ -31,14 +21,14 @@ module MenuGraphr {
     }
 
     /**
-     * A menu management sysstem. Menus can have dialog-style text, scrollable
+     * A menu management system for GameStartr. Menus can have dialog-style text, scrollable
      * and unscrollable grids, and children menus or decorations added.
      */
     export class MenuGraphr implements IMenuGraphr {
         /**
          * The parent IGameStartr managing Things.
          */
-        private GameStarter: IGameStartr;
+        private GameStarter: GameStartr.IGameStartr;
 
         /**
          * All available menus, keyed by name.
@@ -217,7 +207,7 @@ module MenuGraphr {
          * @remarks Creating a menu is done using this.createMenu, so the created menu might
          *          not mark itself as a child of the parent.
          */
-        createMenuChild(name: string, schema: IMenuChildSchema): IThing | IThing[] {
+        createMenuChild(name: string, schema: IMenuChildSchema): GameStartr.IThing | GameStartr.IThing[] {
             switch (schema.type) {
                 case "menu":
                     return this.createMenu((<IMenuChildMenuSchema>schema).name, (<IMenuChildMenuSchema>schema).attributes);
@@ -240,7 +230,7 @@ module MenuGraphr {
          * @param schema   Settings for the words.
          * @returns The words' character Things.
          */
-        createMenuWord(name: string, schema: IMenuWordSchema): IThing[] {
+        createMenuWord(name: string, schema: IMenuWordSchema): GameStartr.IThing[] {
             var menu: IMenu = this.getExistingMenu(name),
                 container: IMenu = this.GameStarter.ObjectMaker.make("Menu"),
                 words: (string[] | IMenuWordCommand)[] = this.filterMenuWords(schema.words);
@@ -258,9 +248,9 @@ module MenuGraphr {
          * @param schema   Settings for the Thing.
          * @returns The newly created Thing.
          */
-        createMenuThing(name: string, schema: IMenuThingSchema): IThing {
+        createMenuThing(name: string, schema: IMenuThingSchema): GameStartr.IThing {
             var menu: IMenu = this.getExistingMenu(name),
-                thing: IThing = this.GameStarter.ObjectMaker.make(schema.thing, schema.args);
+                thing: GameStartr.IThing = this.GameStarter.ObjectMaker.make(schema.thing, schema.args);
 
             this.placeMenuThing(menu, thing, schema.size, schema.position);
 
@@ -423,15 +413,15 @@ module MenuGraphr {
                 textWidth: number = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize,
                 textHeight: number = (menu.textHeight || textProperties.height) * this.GameStarter.unitsize,
                 textPaddingY: number = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize,
-                selectedIndex: number[] = settings.selectedIndex || [0, 0],
+                selectedIndex: [number, number] = settings.selectedIndex || [0, 0],
                 optionChildren: any[] = [],
                 index: number = 0,
                 y: number = top,
                 option: any,
-                optionChild: any,
+                optionChild: IOptionChild,
                 schema: any,
                 title: string,
-                character: IThing,
+                character: GameStartr.IThing,
                 column: IGridCell[],
                 x: number,
                 i: number,
@@ -515,7 +505,7 @@ module MenuGraphr {
                                     y += schema[j][k].y * this.GameStarter.unitsize;
                                 }
                             } else {
-                                option.title = title = "Char" + this.getCharacterEquivalent(schema[j][k]);
+                                title = "Char" + this.getCharacterEquivalent(schema[j][k]);
                                 character = this.GameStarter.ObjectMaker.make(title);
                                 menu.children.push(character);
                                 optionChild.things.push(character);
@@ -571,7 +561,7 @@ module MenuGraphr {
                                 y += schema[j][k].y * this.GameStarter.unitsize;
                             }
                         } else if (schema[j][k] !== " ") {
-                            option.title = title = "Char" + this.getCharacterEquivalent(schema[j][k]);
+                            title = "Char" + this.getCharacterEquivalent(schema[j][k]);
                             character = this.GameStarter.ObjectMaker.make(title);
                             menu.children.push(character);
                             optionChild.things.push(character);
@@ -645,7 +635,7 @@ module MenuGraphr {
             var menu: IListMenu = <IListMenu>this.getExistingMenu(name),
                 textProperties: any = this.GameStarter.ObjectMaker.getPropertiesOf("Text"),
                 textPaddingY: number = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize,
-                option: any,
+                option: IGridCell,
                 x: number,
                 y: number;
 
@@ -693,7 +683,7 @@ module MenuGraphr {
          */
         setSelectedIndex(name: string, x: number, y: number): void {
             var menu: IListMenu = <IListMenu>this.getExistingMenu(name),
-                selectedIndex: number[] = menu.selectedIndex;
+                selectedIndex: [number, number] = menu.selectedIndex;
 
             this.shiftSelectedIndex(name, x - selectedIndex[0], y - selectedIndex[1]);
         }
@@ -931,12 +921,12 @@ module MenuGraphr {
             i: number,
             x: number,
             y: number,
-            onCompletion?: (...args: any[]) => void): IThing[] {
+            onCompletion?: (...args: any[]) => void): GameStartr.IThing[] {
             var menu: IMenu = this.getExistingMenu(name),
                 textProperties: any = this.GameStarter.ObjectMaker.getPropertiesOf("Text"),
-                command: IMenuWordFiltered,
+                command: IMenuWordCommandBase,
                 word: string[],
-                things: IThing[] = [],
+                things: GameStartr.IThing[] = [],
                 textWidth: number,
                 textPaddingX: number,
                 textPaddingY: number,
@@ -1057,7 +1047,7 @@ module MenuGraphr {
          */
         private placeMenuThing(
             menu: IMenu,
-            thing: IThing,
+            thing: GameStartr.IThing,
             size: IMenuSchemaSize = {},
             position: IMenuSchemaPosition = {},
             skipAdd?: boolean): void {
@@ -1115,7 +1105,7 @@ module MenuGraphr {
         }
 
         /**
-         * Adds a single character as an IThing to a menu, potentially with a time delay.
+         * Adds a single character as an GameStartr.IThing to a menu, potentially with a time delay.
          * 
          * @param name   The name of the menu.
          * @param character   The character to add.
@@ -1155,7 +1145,7 @@ module MenuGraphr {
          * @param menu 
          * @returns Whether the character was deleted.
          */
-        private scrollCharacterUp(character: IThing, menu: IMenu): boolean {
+        private scrollCharacterUp(character: GameStartr.IThing, menu: IMenu): boolean {
             this.GameStarter.shiftVert(character, -this.GameStarter.unitsize);
 
             if (character.top < menu.top + (menu.textYOffset - 1) * this.GameStarter.unitsize) {
@@ -1483,24 +1473,24 @@ module MenuGraphr {
         }
 
         /**
-         * @param wordsRaw   Text that, if String(s), should be filtered using this.filterWord.
+         * @param textRaw   Text that, if String(s), should be filtered using this.filterWord.
          * @returns The words, filtered.
          */
-        private filterText(extRaw: string | string[] | string[][]): string[][] {
-            if (extRaw.constructor === Array) {
-                if (extRaw.length === 0) {
+        private filterText(textRaw: IMenuDialogRaw): string[][] {
+            if (textRaw.constructor === Array) {
+                if (textRaw.length === 0) {
                     return [];
                 }
 
-                if (extRaw[0].constructor === String) {
-                    return [<string[]>extRaw];
+                if (textRaw[0].constructor === String) {
+                    return [<string[]>textRaw];
                 }
 
-                return <string[][]>extRaw;
+                return <string[][]>textRaw;
             }
 
             var characters: string[] = [],
-                total: string = <string>extRaw,
+                total: string = <string>textRaw,
                 component: string = "",
                 i: number;
 

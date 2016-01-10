@@ -1,50 +1,549 @@
 declare module MenuGraphr {
-    export interface IGameStartr extends EightBittr.IEightBittr {
-        GroupHolder: GroupHoldr.IGroupHoldr;
-        MapScreener: MapScreenr.IMapScreenr;
-        ObjectMaker: ObjectMakr.IObjectMakr;
-        TimeHandler: TimeHandlr.ITimeHandlr;
-        addThing(thing: IThing | string | any[], left?: number, top?: number): IThing;
-        killNormal(thing: IThing): void;
-        setHeight(thing: IThing, height: number): void;
-        setWidth(thing: IThing, width: number): void;
+    /**
+     * General attributes for both Menus and MenuSchemas.
+     */
+    export interface IMenuBase {
+        /**
+         * A menu to set as active when this one is deleted.
+         */
+        backMenu?: string;
+
+        /**
+         * A callback for when this menu is set as active.
+         */
+        callback?: (...args: any[]) => void;
+
+        /**
+         * Schemas of children to add on creation.
+         */
+        childrenSchemas?: IMenuChildSchema[];
+
+        /**
+         * A containing menu to position within.
+         */
+        container?: string;
+
+        /**
+         * Whether this should be deleted when its dialog finishes.
+         */
+        deleteOnFinish?: boolean;
+
+        /**
+         * Whether the dialog should finish when the last word is displayed, instead
+         * of waiting for user input.
+         */
+        finishAutomatically?: boolean;
+
+        /**
+         * How long to delay completion when finishAutomatically is true.
+         */
+        finishAutomaticSpeed?: number;
+
+        /**
+         * How tall this should be.
+         */
+        height?: number;
+
+        /**
+         * Whether user selection events should be ignored.
+         */
+        ignoreA?: boolean;
+
+        /**
+         * Whether user deselection events should be ignored.
+         */
+        ignoreB?: boolean;
+
+        /**
+         * Whether deselection events should count as selection during dialogs.
+         */
+        ignoreProgressB?: boolean;
+
+        /**
+         * Whether this should be kept alive when deselected.
+         */
+        keepOnBack?: boolean;
+
+        /**
+         * Other menus to delete when this is deleted.
+         */
+        killOnB?: string[];
+
+        /**
+         * A callback for when this becomes active.
+         */
+        onActive?: (name: string) => void;
+
+        /**
+         * A callback for when this is deselected.
+         */
+        onBPress?: (name: string) => void;
+
+        /**
+         * A callback for a user event directing down.
+         */
+        onDown?: (GameStartr: GameStartr.IGameStartr) => void;
+
+        /**
+         * A callback for when this becomes inactive.
+         */
+        onInactive?: (name: string) => void;
+
+        /**
+         * A callback for a user event directing to the left.
+         */
+        onLeft?: (GameStartr: GameStartr.IGameStartr) => void;
+
+        /**
+         * A callback for when this is deleted.
+         */
+        onMenuDelete?: (GameStartr: GameStartr.IGameStartr) => void;
+
+        /**
+         * A callback for a user event directing to the right.
+         */
+        onRight?: (GameStartr: GameStartr.IGameStartr) => void;
+
+        /**
+         * A callback for a user event directing up.
+         */
+        onUp?: (GameStartr: GameStartr.IGameStartr) => void;
+
+        /**
+         * A sizing description for this, including width and height.
+         */
+        size?: IMenuSchemaSize;
+
+        /**
+         * A menu to set as active if the start button is pressed while this menu is active.
+         */
+        startMenu?: string;
+
+        /**
+         * A manual width for the area text may be placed in.
+         */
+        textAreaWidth?: number;
+
+        /**
+         * How tall text characters should be treated as.
+         */
+        textHeight?: number;
+
+        /**
+         * How much horizontal padding should be between characters.
+         */
+        textPaddingX?: number;
+
+        /**
+         * How much vertical padding should be between characters.
+         */
+        textPaddingY?: number;
+
+        /**
+         * How long to delay between placing words.
+         */
+        textSpeed?: number;
+
+        /**
+         * A manual starting x-location for dialog text.
+         */
+        textStartingX?: string;
+
+        /**
+         * How wide text characters should be treated as.
+         */
+        textWidth?: number;
+
+        /**
+         * A multiplier for textWidth. Commonly -1 for right-to-left text.
+         */
+        textWidthMultiplier?: number;
+
+        /**
+         * A horizontal offset for the text placement area.
+         */
+        textXOffset?: number;
+
+        /**
+         * A vertical offset for text placement area.
+         */
+        textYOffset?: number;
+
+        /**
+         * How wide this should be.
+         */
+        width?: number;
     }
 
-    export interface IThing extends EightBittr.IThing {
-        GameStarter: IGameStartr;
-        name: string;
-        groupType: string;
-        hidden: boolean;
-    }
-
+    /**
+     * Existing menus, listed by name.
+     */
     export interface IMenusContainer {
         [i: string]: IMenu;
     }
 
-    export interface IMenu extends IThing, IMenuSchema {
-        children: IThing[];
+    /**
+     * A Menu Thing, with any number of children.
+     */
+    export interface IMenu extends GameStartr.IThing, IMenuSchema {
+        /**
+         * Child Things visible within the Menu.
+         */
+        children: GameStartr.IThing[];
+
+        /**
+         * How tall this is.
+         */
         height: number;
+
+        /**
+         * A summary of where this menu is in its dialog.
+         */
         progress?: IMenuProgress;
+
+        /**
+         * Where text should start displaying, horizontally.
+         */
         textX?: number;
+
+        /**
+         * How wide this is.
+         */
         width: number;
     }
 
+    /**
+     * A general Text THing.
+     */
+    export interface IText extends GameStartr.IThing {
+        /**
+         * How much vertical padding this Thing requires.
+         */
+        paddingY: number;
+    }
+
+    /**
+     * A summary of a menu's progress through its dialog.
+     */
     export interface IMenuProgress {
+        /**
+         * Whether the dialog has been completed.
+         */
         complete?: boolean;
+
+        /**
+         * A callback for when the dialog completes.
+         */
         onCompletion?: (...args: any[]) => void;
+
+        /**
+         * Whether the dialog is currently being added to the menu.
+         */
         working?: boolean;
     }
 
+    /**
+     * Known menu schemas, keyed by name.
+     */
+    export interface IMenuSchemas {
+        [i: string]: IMenuSchema;
+    }
+
+    /**
+     * A schema to specify creating a menu. 
+     */
+    export interface IMenuSchema extends IMenuBase {
+        /**
+         * How the menu should be positioned within its container.
+         */
+        position?: IMenuSchemaPosition;
+    }
+
+    /**
+     * A schema to specify creating a list menu.
+     */
+    export interface IListMenuSchema extends IMenuSchema {
+        /**
+         * How many scrolling items should be visible within the menu.
+         */
+        scrollingItems?: number;
+
+        /**
+         * Whether scrolling items should be computed on creation.
+         */
+        scrollingItemsComputed?: boolean;
+    }
+
+    /**
+     * A description of how wide and tall a menu should be.
+     */
+    export interface IMenuSchemaSize {
+        /**
+         * How wide the menu should be.
+         */
+        width?: number;
+
+        /**
+         * How tall the menu should be.
+         */
+        height?: number;
+    }
+
+    /**
+     * A description of how a meny should be positioned within its container.
+     */
+    export interface IMenuSchemaPosition {
+        /**
+         * An optional horizontal position modifier, as "center", "right", or "stretch".
+         */
+        horizontal?: string;
+
+        /**
+         * Horizontal and vertical offsets to shfit the menu by.
+         */
+        offset?: IMenuSchemaPositionOffset;
+
+        /**
+         * Whether this should have children not shifted vertically relative to the 
+         * menu top (used by list menus).
+         */
+        relative?: boolean;
+
+        /**
+         * An optional vertical position modifier, as "center", "bottom", or "stretch".
+         */
+        vertical?: string;
+    }
+
+    /**
+     * Horizontal and vertical offsets to shift the menu by.
+     */
+    export interface IMenuSchemaPositionOffset {
+        /**
+         * How far to shift the menu vertically from the top.
+         */
+        top?: number;
+
+        /**
+         * How far to shift the menu horizontally from the right.
+         */
+        right?: number;
+
+        /**
+         * How far to shift the menu vertically from the bottom.
+         */
+        bottom?: number;
+
+        /**
+         * How far to shift the menu horizontally from the left.
+         */
+        left?: number;
+    }
+
+    /**
+     * A description of a menu child to create, including name and child type.
+     */
+    export interface IMenuChildSchema extends IMenuSchema {
+        /**
+         * What type of child this is, as "menu", "text", or "thing".
+         */
+        type: string;
+    }
+
+    /**
+     * A description of a menu to create as a menu child.
+     */
+    export interface IMenuChildMenuSchema extends IMenuChildSchema {
+        /**
+         * Menu attributes to pass to the menu.
+         */
+        attributes: IMenuSchema;
+
+        /**
+         * The name of the menu.
+         */
+        name: string;
+    }
+
+    /**
+     * A descripion of a word to create as a menu child.
+     */
+    export interface IMenuWordSchema extends IMenuChildSchema {
+        /**
+         * How to position the word within the menu.
+         */
+        position: IMenuSchemaPosition;
+
+        /**
+         * A description of the word area's size.
+         */
+        size: IMenuSchemaSize;
+
+        /**
+         * Raw words to set as the text contents.
+         */
+        words: (string | IMenuWordCommand)[];
+    }
+
+    /**
+     * A description of a Thing to create as a menu child.
+     */
+    export interface IMenuThingSchema extends IMenuChildSchema {
+        /**
+         * Arguments to proliferate onto the Thing.
+         */
+        args?: any;
+
+        /**
+         * How to position the Thing within the menu.
+         */
+        position?: IMenuSchemaPosition;
+
+        /**
+         * A description of the Thing's size.
+         */
+        size?: IMenuSchemaSize;
+
+        /**
+         * What Thing title to create.
+         */
+        thing: string;
+    }
+
+    /**
+     * Various raw forms of dialog that may be used. A single String is common
+     * for short dialogs, and longer ones may use a String for each word or character,
+     * as well as filtered Objects.
+     */
+    export type IMenuDialogRaw = string | (string | string[] | (string | string[])[] | IMenuWordCommandBase)[]
+
+    /**
+     * A general word and/or command to use within a text dialog.
+     */
+    export interface IMenuWordCommandBase {
+        /**
+         * How many characters long the word is.
+         */
+        length?: number | string;
+
+        /**
+         * The actual word to place, if this is a text
+         */
+        word?: string;
+    }
+
+    /**
+     * A word command to modify dialog within its text.
+     */
+    export interface IMenuWordCommand extends IMenuWordCommandBase {
+        /**
+         * Whether the command's position changing should have unitsize applied.
+         */
+        applyUnitsize?: boolean;
+
+        /**
+         * An attribute to change, if this is an attribute change command.
+         */
+        attribute: string;
+
+        /**
+         * The command, as "attribute", "attributeReset", "padLeft", or "position".
+         */
+        command: string;
+
+        /**
+         * A value for the attribute to change, if this is an attribute change command.
+         */
+        value: any;
+    }
+
+    /**
+     * A pad left command to add a word with padding.
+     */
+    export interface IMenuWordPadLeftCommand extends IMenuWordCommandBase {
+        /**
+         * Whether the amount of padding should be reduced by the word length.
+         */
+        alignRight?: boolean;
+    }
+
+    /**
+     * A word command to reset an attribute after an attribute change command.
+     */
+    export interface IMenuWordReset extends IMenuWordCommandBase {
+        /**
+         * The name of the attribute to reset.
+         */
+        attribute: string;
+    }
+
+    /**
+     * A word command to shift the position to add subsequent words.
+     */
+    export interface IMenuWordPosition extends IMenuWordCommandBase {
+        /**
+         * How far to shift horizontally.
+         */
+        x?: number;
+
+        /**
+         * How far to shift vertically.
+         */
+        y?: number;
+    }
+
+    /**
+     * A menu containing some number of options as cells in a grid.
+     */
     export interface IListMenu extends IListMenuSchema, IMenu {
-        arrow: IThing;
+        /**
+         * The arrow Thing indicating the current selection.
+         */
+        arrow: GameStartr.IThing;
+
+        /**
+         * A horizontal offset for the arrow Thing.
+         */
         arrowXOffset?: number;
+
+        /**
+         * A vertical offset for the arrow Thing.
+         */
         arrowYOffset?: number;
+
+        /**
+         * The grid of options, as columns containing rows.
+         */
         grid: IGridCell[][];
+
+        /**
+         * How many columns are available in the grid.
+         */
         gridColumns: number;
+
+        /**
+         * How many rows are available in the grid.
+         */
         gridRows: number;
+
+        /**
+         * How tall this is.
+         */
         height: number;
+
+        /**
+         * All options available in the grid.
+         */
         options: IGridCell[];
-        optionChildren: any;
+
+        /**
+         * Descriptions of the options, with their grid cell and Things.
+         */
+        optionChildren: IOptionChild[];
+
+        /**
+         * A summary of the menu's progress through its list.
+         */
         progress: IListMenuProgress;
 
         /**
@@ -57,29 +556,96 @@ declare module MenuGraphr {
          */
         singleColumnList: boolean;
 
-        selectedIndex: number[];
+        /**
+         * The currently selected [column, row] in the grid.
+         */
+        selectedIndex: [number, number];
+
+        /**
+         * How wide each column of text should be in the grid.
+         */
         textColumnWidth: number;
+
+        /**
+         * How wide this is.
+         */
         width: number;
     }
 
+    /**
+     * A single option within a list menu's grid.
+     */
     export interface IGridCell {
+        /**
+         * A callback for selecting this cell with a user selection event.
+         */
         callback?: (...args: any[]) => void;
+
+        /**
+         * The column containing this option.
+         */
         column: IGridCell[];
+
+        /**
+         * What number column contains this option.
+         */
         columnNumber: number;
+
+        /**
+         * This option's index within all grid options.
+         */
         index: number;
+
+        /**
+         * What number row contains this option.
+         */
         rowNumber: number;
-        // These two will likely need to be confirmed...
-        schema: (string | IMenuWordCommand)[];
-        text: (string | IMenuWordCommand)[];
-        title: string;
+
+        /**
+         * Text to display to represent this option.
+         */
+        text: IMenuDialogRaw;
+
+        /**
+         * Floating texts that should be added with the option.
+         */
+        textsFloating?: any;
+
+        /**
+         * Things that visually represent this option.
+         */
+        things: GameStartr.IThing[];
+
+        /**
+         * A horizontal left edge for this option's area.
+         */
         x: number;
+
+        /**
+         * A vertical top edge for this option's area.
+         */
         y: number;
+    }
+
+    export interface IOptionChild {
+        option: IGridCell;
+
+        /**
+         * Things that visually represent this child and its option.
+         */
+        things: GameStartr.IThing[];
     }
 
     export interface IListMenuOptions {
         bottom?: any;
-        options: any[] | { (): any[]; };
-        selectedIndex?: number[];
+        options: any[] | {
+            (): any[];
+        };
+
+        /**
+         * A default starting selected index.
+         */
+        selectedIndex?: [number, number];
     }
 
     export interface IListMenuProgress extends IMenuProgress {
@@ -87,152 +653,6 @@ declare module MenuGraphr {
         i: any;
         x: any;
         y: any;
-    }
-
-    /**
-     * General attributes for both Menus and MenuSchemas.
-     */
-    export interface IMenuBase {
-        backMenu?: string;
-        callback?: (...args: any[]) => void;
-        childrenSchemas?: IMenuChildSchema[];
-        container?: string;
-        deleteOnFinish?: boolean;
-        finishAutomatically?: boolean;
-        finishAutomaticSpeed?: number;
-        height?: number;
-        ignoreA?: boolean;
-        ignoreB?: boolean;
-        ignoreProgressB?: boolean;
-        keepOnBack?: boolean;
-        killOnB?: string[];
-        onActive?: (name: string) => void;
-        onBPress?: (name: string) => void;
-        onDown?: (GameStartr: IGameStartr) => void;
-        onInactive?: (name: string) => void;
-        onLeft?: (GameStartr: IGameStartr) => void;
-        onMenuDelete?: (GameStartr: IGameStartr) => void;
-        onRight?: (GameStartr: IGameStartr) => void;
-        onUp?: (GameStartr: IGameStartr) => void;
-        size?: IMenuSchemaSize;
-
-        /**
-         * A menu to set as active if the start button is pressed while this menu is active.
-         */
-        startMenu?: string;
-        textAreaWidth?: number;
-        textArrowXOffset?: number;
-        textArrowYOffset?: number;
-        textHeight?: number;
-        textPaddingX?: number;
-        textPaddingY?: number;
-        textSpeed?: number;
-        textStartingX?: string;
-        textWidth?: number;
-        textWidthMultiplier?: number;
-        textXOffset?: number;
-        textYOffset?: number;
-        width?: number;
-    }
-
-    /**
-     * Known menu schemas, keyed by name.
-     */
-    export interface IMenuSchemas {
-        [i: string]: IMenuSchema;
-    }
-
-    export interface IMenuSchema extends IMenuBase {
-        position?: IMenuSchemaPosition;
-    }
-
-    export interface IListMenuSchema extends IMenuSchema {
-        scrollingItems?: number;
-        scrollingItemsComputed?: boolean | number;
-    }
-
-    export interface IMenuSchemaSize {
-        width?: number;
-        height?: number;
-    }
-
-    export interface IMenuSchemaPosition {
-        horizontal?: string;
-        offset?: IMenuSchemaPositionOffset;
-        relative?: boolean;
-        vertical?: string;
-    }
-
-    export interface IMenuSchemaPositionOffset {
-        top?: number;
-        right?: number;
-        bottom?: number;
-        left?: number;
-    }
-
-    /**
-     * A description of a menu child to create, including name and child type.
-     */
-    export interface IMenuChildSchema extends IMenuSchema {
-        name?: string;
-        type: string;
-        words?: IMenuDialogRaw;
-    }
-
-    export interface IMenuChildMenuSchema extends IMenuChildSchema {
-        attributes: IMenuSchema;
-        name: string;
-    }
-
-    export interface IMenuWordSchema extends IMenuChildSchema {
-        position: IMenuSchemaPosition;
-        size: IMenuSchemaSize;
-        words: (string | IMenuWordCommand)[];
-    }
-
-    export interface IMenuThingSchema extends IMenuChildSchema {
-        args?: any;
-        position?: IMenuSchemaPosition;
-        size?: IMenuSchemaSize;
-        thing: string;
-    }
-
-    export interface IMenuWordFiltered {
-        length?: number | string;
-        word?: string;
-    }
-
-    /**
-     * Various raw forms of dialog that may be used. A single String is common
-     * for short dialogs, and longer ones may use a String for each word or character,
-     * as well as filtered Objects.
-     */
-    export type IMenuDialogRaw = string | (string | string[] | (string | string[])[] | IMenuWordFiltered)[]
-
-    export interface IMenuWordCommand extends IMenuWordFiltered {
-        applyUnitsize?: boolean;
-        attribute: string;
-        command: string;
-        value: any;
-    }
-
-    export interface IMenuWordPadLeftCommand extends IMenuWordFiltered {
-        alignRight?: boolean;
-    }
-
-    export interface IMenuWordReset extends IMenuWordFiltered {
-        attribute: string;
-    }
-
-    export interface IMenuWordPosition extends IMenuWordFiltered {
-        x?: number;
-        y?: number;
-    }
-
-    export interface IMenuWordLength extends IMenuWordFiltered { }
-
-    export interface IText extends IThing {
-        paddingY: number;
     }
 
     /**
@@ -250,7 +670,7 @@ declare module MenuGraphr {
     }
 
     export interface IReplacerFunction {
-        (GameStarter: IGameStartr): string[];
+        (GameStarter: GameStartr.IGameStartr): string[];
     }
 
     /**
@@ -258,9 +678,9 @@ declare module MenuGraphr {
      */
     export interface IMenuGraphrSettings {
         /**
-         * The parent IGameStartr managing Things.
+         * The parent GameStartr.IGameStartr managing Things.
          */
-        GameStarter: IGameStartr;
+        GameStarter: GameStartr.IGameStartr;
 
         /**
          * Known menu schemas, keyed by name.
@@ -284,7 +704,7 @@ declare module MenuGraphr {
     }
 
     /**
-     * A menu management sysstem. Menus can have dialog-style text, scrollable
+     * A menu management system. Menus can have dialog-style text, scrollable
      * and unscrollable grids, and children menus or decorations added.
      */
     export interface IMenuGraphr {
