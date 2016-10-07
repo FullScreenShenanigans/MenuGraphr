@@ -70,7 +70,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Initializes a new instance of the MenuGraphr class.
-     * 
+     *
      * @param settings   Settings to be used for initialization.
      */
     public constructor(settings: IMenuGraphrSettings) {
@@ -110,7 +110,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Returns a menu, throwing an error if it doesn't exist.
-     * 
+     *
      * @param name   A name of a menu.
      * @returns The menu under the given name.
      */
@@ -154,7 +154,7 @@ export class MenuGraphr implements IMenuGraphr {
      * Creates a menu with the given name and attributes, and stores it under the name.
      * Default information is used from the schema of that name, such as position and
      * children, but may be override by attributes.
-     * 
+     *
      * @param name   The name of the menu.
      * @param attributes   Custom attributes to apply to the menu.
      * @returns The newly created menu.
@@ -203,7 +203,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Adds a child object to an existing menu.
-     * 
+     *
      * @param name   The name of the existing menu.
      * @param schema   Settings for the child, including name and child type.
      * @returns The newly created Thing or Things.
@@ -228,7 +228,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Creates a series of words as a child of a menu.
-     * 
+     *
      * @param name   The name of the menu.
      * @param schema   Settings for the words.
      * @returns The words' character Things.
@@ -246,7 +246,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Creates a Thing as a child of a menu.
-     * 
+     *
      * @param name   The name of the menu.
      * @param schema   Settings for the Thing.
      * @returns The newly created Thing.
@@ -269,7 +269,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Hides a menu of the given name and deletes its children, if it exists.
-     * 
+     *
      * @param name   The name of the menu to hide.
      */
     public hideMenu(name: string): void {
@@ -283,7 +283,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Deletes a menu of the given name, if it exists.
-     * 
+     *
      * @param name   The name of the menu to delete.
      */
     public deleteMenu(name: string): void {
@@ -315,8 +315,8 @@ export class MenuGraphr implements IMenuGraphr {
     }
 
     /**
-     * Adds dialog-style text to a menu. If the text overflows, 
-     * 
+     * Adds dialog-style text to a menu. If the text overflows,
+     *
      * @param name   The name of the menu.
      * @param dialog   Raw dialog to add to the menu.
      * @param onCompletion   An optional callback for when the text is done.
@@ -347,15 +347,15 @@ export class MenuGraphr implements IMenuGraphr {
             this.addMenuText(name, dialogParsed[currentLine - 1], callback);
         };
 
-        // This first call to addMenuText shouldn't be the callback, because if 
-        // being called from a childrenSchema of type "text", it shouldn't delete 
+        // This first call to addMenuText shouldn't be the callback, because if
+        // being called from a childrenSchema of type "text", it shouldn't delete
         // any other menu children from childrenSchemas.
         this.addMenuText(name, dialogParsed[0], callback);
     }
 
     /**
      * Continues a menu from its current display words to the next line.
-     * 
+     *
      * @param name    The name of the menu.
      */
     public continueMenu(name: string): void {
@@ -399,7 +399,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Adds a list of text options to a menu.
-     * 
+     *
      * @param name   The name of the menu.
      * @param settings   Settings for the list, particularly its options, starting
      *                   index, and optional floating bottom.
@@ -612,7 +612,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Retrives the currently selected grid cell of a menu.
-     * 
+     *
      * @param name   The name of the menu.
      * @returns The currently selected grid cell of the menu.
      */
@@ -628,7 +628,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Shifts the selected index of a list menu, adjusting for scrolling if necessary.
-     * 
+     *
      * @param name   The name of the menu.
      * @param dx   How far along the menu's grid to shift horizontally.
      * @param dy   How far along the menu's grid to shift vertically.
@@ -677,7 +677,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Sets the current selected index of a menu.
-     * 
+     *
      * @param name   The name of the menu.
      * @param x   The new horizontal value for the index.
      * @param y   The new vertical value for the index.
@@ -691,7 +691,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Sets the currently active menu.
-     * 
+     *
      * @param name   The name of the menu to set as active.
      */
     public setActiveMenu(name: string): void {
@@ -708,7 +708,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Reacts to a user event directing in the given direction.
-     * 
+     *
      * @param direction   The direction of the interaction.
      */
     public registerDirection(direction: number): void {
@@ -866,7 +866,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Adds a series of words to a menu.
-     * 
+     *
      * @param name   The name of the menu.
      * @param words   Words to add to the menu, as String[]s and/or commands.
      * @param onCompletion   An optional event for when the words are added.
@@ -901,7 +901,7 @@ export class MenuGraphr implements IMenuGraphr {
     /**
      * Adds a word within a series of words to a menu, then adds the next word,
      * and so on. This is the real force behind addMenuDialog and addMenuText.
-     * 
+     *
      * @param name   The name of the menu.
      * @param words   Words to add to the menu, as String[]s and/or commands.
      * @param i   The index of the current word to add.
@@ -994,7 +994,7 @@ export class MenuGraphr implements IMenuGraphr {
         }
 
         // If the next word would pass the edge of the menu, move down a line
-        if (x + this.computeFutureWordLength(words[i + 1], textWidth, textPaddingX) >= menu.right - menu.textXOffset) {
+        if (x + this.computeFutureWordLength(words[i + 1], textWidth, textPaddingX) >= menu.right - menu.textXOffset - this.GameStarter.unitsize * 2) {
             x = menu.textX;
             y += textPaddingY;
         }
@@ -1034,7 +1034,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Places and positions a Thing within a menu basd on its size and position schemas.
-     * 
+     *
      * @param thing   The Thing to place and position.
      * @param size   An optional description of the Thing's size.
      * @param position   An optional description of the Thing's position.
@@ -1101,7 +1101,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Adds a single character as an GameStartr.IThing to a menu, potentially with a time delay.
-     * 
+     *
      * @param name   The name of the menu.
      * @param character   The character to add.
      * @param x   The x-position of the character.
@@ -1135,9 +1135,9 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Scrolls a menu's character up once. If it's above the menu's area, it's deleted.
-     * 
+     *
      * @param character   The Thing to scroll up.
-     * @param menu 
+     * @param menu
      * @returns Whether the character was deleted.
      */
     private scrollCharacterUp(character: GameStartr.IThing, menu: IMenu): boolean {
@@ -1153,7 +1153,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Deletes all children of a menu.
-     * 
+     *
      * @param name   The name of the menu.
      */
     private deleteMenuChildren(name: string): void {
@@ -1166,7 +1166,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Deletes the child of a menu and any of its children.
-     * 
+     *
      * @param child   A menu child to delete.
      */
     private deleteMenuChild(child: IMenu): void {
@@ -1200,7 +1200,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Un-hides a list menu's arrow Thing.
-     * 
+     *
      * @param name   The name of the menu.
      */
     private activateMenuList(name: string): void {
@@ -1213,7 +1213,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Hides a list menu's arrow Thing.
-     * 
+     *
      * @param name   The name of the menu.
      */
     private deactivateMenuList(name: string): void {
@@ -1226,7 +1226,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Runs the callback for a menu's selected list option.
-     * 
+     *
      * @param name   The name of the menu.
      */
     private triggerMenuListOption(name: string): void {
@@ -1238,9 +1238,9 @@ export class MenuGraphr implements IMenuGraphr {
     }
 
     /**
-     * Determines how many scrolling items are able to fit within a list menu, as 
+     * Determines how many scrolling items are able to fit within a list menu, as
      * the index of the first bottom not within the menu.
-     * 
+     *
      * @param menu   The list menu.
      * @returns The number of scrolling items, or Infinity if they all fit.
      */
@@ -1260,7 +1260,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Scrolls a list menu's Things vertically.
-     * 
+     *
      * @param name   The name of the menu.
      * @param dy   How far along the list menu's grid to scroll.
      * @param textPaddingY   How much text is padded, to compute scrolling with dy.
@@ -1431,7 +1431,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Filters all String words in a menu's text using this.filterWord.
-     * 
+     *
      * @param words   The words to filter, as Strings or command Objects.
      * @returns The words, with all Strings filtered.
      */
@@ -1494,7 +1494,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Converts a word command into its equivalent word text.
-     * 
+     *
      * @param wordCommand   The word command.
      * @param menu   The menu containing the word command.
      * @returns The equivalent word text for the command.
@@ -1534,7 +1534,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Converts a word command to pad text from the left.
-     * 
+     *
      * @param wordCommand   The word command.
      * @returns   The word command's parsed text.
      */
@@ -1569,7 +1569,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Retrieves the value of a text replacement of the given key.
-     * 
+     *
      * @param key   The key of the text replacement to retrieve.
      * @returns The value of the text replacement, if it exists.
      */
@@ -1590,7 +1590,7 @@ export class MenuGraphr implements IMenuGraphr {
     /**
      * Creates a new String equivalent to an old String repeated any number of
      * times. If times is 0, a blank String is returned.
-     * 
+     *
      * @param text   The characters to repeat.
      * @param times   How many times to repeat (by default, 1).
      * @returns The original string, repeated.
@@ -1601,7 +1601,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Predicts how wide a word's area will be when displayed as dialog.
-     * 
+     *
      * @param wordRaw   The word that will be displayed.
      * @param textWidth   How wide each character should be.
      * @param textPaddingX   How much space between each character.
@@ -1632,7 +1632,7 @@ export class MenuGraphr implements IMenuGraphr {
 
     /**
      * Predicts how wide a letter will be, based on its equivalent Thing's width.
-     * 
+     *
      * @param letter   The name of the letter to create.
      * @returns How wide the letter will be on the screen.
      */
