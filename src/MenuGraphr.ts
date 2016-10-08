@@ -946,6 +946,7 @@ export class MenuGraphr implements IMenuGraphr {
 
         textSpeed = menu.textSpeed;
         textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize;
+        textPaddingRight =  (menu.textPaddingRight || textProperties.paddingRight) * this.GameStarter.unitsize;
         textPaddingX = (menu.textPaddingX || 0) * this.GameStarter.unitsize;
         textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize;
         textWidthMultiplier = menu.textWidthMultiplier || 1;
@@ -993,7 +994,6 @@ export class MenuGraphr implements IMenuGraphr {
 
             return things;
         }
-
         // If the next word would pass the edge of the menu, move down a line
         if (x + this.computeFutureWordLength(words[i + 1], textWidth, textPaddingX) >= menu.right - menu.textXOffset - textPaddingRight) {
             x = menu.textX;
