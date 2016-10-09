@@ -946,8 +946,8 @@ export class MenuGraphr implements IMenuGraphr {
 
         textSpeed = menu.textSpeed;
         textWidth = (menu.textWidth || textProperties.width) * this.GameStarter.unitsize;
-        textPaddingRight =  (menu.textPaddingRight || textProperties.paddingRight) * this.GameStarter.unitsize;
-        textPaddingX = (menu.textPaddingX || 0) * this.GameStarter.unitsize;
+        textPaddingRight =  (menu.textPaddingRight || 0) * this.GameStarter.unitsize;
+        textPaddingX = (menu.textPaddingX || textProperties.paddingX) * this.GameStarter.unitsize;
         textPaddingY = (menu.textPaddingY || textProperties.paddingY) * this.GameStarter.unitsize;
         textWidthMultiplier = menu.textWidthMultiplier || 1;
 
