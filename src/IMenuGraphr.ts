@@ -263,11 +263,6 @@ export interface IMenuSchema extends IMenuBase {
      * How the menu should be positioned within its container.
      */
     position?: IMenuSchemaPosition;
-
-    /**
-     * Whether or not the last selected index should be saved.
-     */
-    saveIndex?: boolean;
 }
 
 /**
@@ -279,6 +274,11 @@ export interface IListMenuSchema extends IMenuSchema {
      * this menu.
      */
     clearedIndicesOnDeletion?: string[];
+
+    /**
+     * Whether or not the last selected index should be saved.
+     */
+    saveIndex?: boolean;
 
     /**
      * How many scrolling items should be visible within the menu.
