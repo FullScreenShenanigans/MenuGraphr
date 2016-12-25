@@ -460,11 +460,6 @@ export interface IMenuWordCommandBase {
  */
 export interface IMenuWordCommand extends IMenuWordCommandBase {
     /**
-     * Whether the command's position changing should have unitsize applied.
-     */
-    applyUnitsize?: boolean;
-
-    /**
      * An attribute to change, if this is an attribute change command.
      */
     attribute: string;
