@@ -746,7 +746,7 @@ export interface IMenuGraphrSettings {
     /**
      * The parent GameStartr managing Things.
      */
-    GameStarter: GameStartr;
+    gameStarter: GameStartr;
 
     /**
      * Known menu schemas, keyed by name.

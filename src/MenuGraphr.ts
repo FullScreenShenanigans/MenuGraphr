@@ -80,11 +80,11 @@ export class MenuGraphr implements IMenuGraphr {
         if (!settings) {
             throw new Error("No settings object given to MenuGraphr.");
         }
-        if (!settings.GameStarter) {
+        if (!settings.gameStarter) {
             throw new Error("No GameStarter given to MenuGraphr.");
         }
 
-        this.gameStarter = settings.GameStarter;
+        this.gameStarter = settings.gameStarter;
 
         this.schemas = settings.schemas || {};
         this.aliases = settings.aliases || {};
