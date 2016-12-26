@@ -52,7 +52,7 @@ export class MenuGraphr implements IMenuGraphr {
     private sounds: ISoundNames;
 
     /**
-     * Alternate Thing titles for charactes, such as " " for "space".
+     * Alternate Thing titles for characters, such as " " for "space".
      */
     private aliases: IAliases;
 
@@ -119,7 +119,7 @@ export class MenuGraphr implements IMenuGraphr {
      */
     public getExistingMenu(name: string): IMenu {
         if (!this.menus[name]) {
-            throw new Error("'" + name + "' menu does not exist.");
+            throw new Error(`The '${name}' menu does not exist.`);
         }
 
         return this.menus[name];
