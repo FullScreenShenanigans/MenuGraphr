@@ -131,14 +131,12 @@ new MenuGraphr({
 });
 ```
 
-####
-
 ### `createMenu`
 
 Menus are created with `createMenu`, which takes in the string name of the menu and any additional properties.
 
 ```typescript
-menuGrapher.createMenu("GeneralText");
+menuGrapher.createMenu("GeneralText", { /* ... */ });
 ```
 
 Each menu is identified by a unique string name.
@@ -146,7 +144,18 @@ When `createMenu` creates a menu, any existing menu under that name is disposed 
 
 ### `setActiveMenu`
 
+Sets a menu to appear to have user focus.
+For dialogs, this allows the user to "A" through them.
+For lists, this visualizes the selected index with an "Arrow" Thing.
 
+Only one menu may be active at any time.
+There does not need to be an active menu, and menus are not active by default.
+
+```typescript
+menuGrapher.createMenu("GeneralText");
+menuGrapher.addMenuDialog("GeneralText", "Hello world!");
+menuGrapher.setActiveMenu("GeneralText");
+```
 
 <!-- {{Development}} -->
 ## Development
