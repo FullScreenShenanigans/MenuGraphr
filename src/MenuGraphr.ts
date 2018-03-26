@@ -1,9 +1,9 @@
 import { GameStartr, IThing } from "gamestartr";
 
 import {
-    IAliases, IGridCell, IListMenu, IListMenuOptions, IListMenuProgress,
-    IMenu, IMenuBase, IMenuChildMenuSchema, IMenuChildSchema,
-    IMenuDialogRaw, IMenuGraphr, IMenuGraphrSettings, IListMenuOption, IMenuSchema,
+    IAliases, IGridCell, IListMenu, IListMenuOption, IListMenuOptions,
+    IListMenuProgress, IMenu, IMenuBase, IMenuChildSchema,
+    IMenuDialogRaw, IMenuGraphr, IMenuGraphrSettings, IMenuSchema,
     IMenuSchemaPosition, IMenuSchemaPositionOffset, IMenuSchemas,
     IMenuSchemaSize, IMenusContainer, IMenuThingSchema, IMenuWordCommand,
     IMenuWordCommandBase, IMenuWordPadLeftCommand, IMenuWordPosition, IMenuWordSchema,
@@ -211,6 +211,9 @@ export class MenuGraphr implements IMenuGraphr {
 
             case "thing":
                 return this.createMenuThing(name, schema);
+
+            default:
+                throw new Error(`Unknown schema type: '${(schema as IMenuChildSchema).type}'.`);
         }
     }
 
@@ -341,8 +344,7 @@ export class MenuGraphr implements IMenuGraphr {
         };
 
         // This first call to addMenuText shouldn't be the callback.
-        // If called from a childrenSchema of type "text", it shouldn't delete
-        // any other menu children from childrenSchemas.
+        // If called from a childrenSchema of type "text", it shouldn't delete any other menu children from childrenSchemas.
         this.addMenuText(menuName, dialogParsed[0], callback);
     }
 

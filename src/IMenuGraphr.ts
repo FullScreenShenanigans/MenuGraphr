@@ -228,7 +228,7 @@ export interface IListMenuSchema extends IMenuSchema {
      * Whether scrolling items should be computed on creation.
      */
     scrollingItemsComputed?: boolean;
-    
+
     /**
      * Whether the list should always be a single column, rather than auto-flow.
      */
@@ -672,13 +672,20 @@ export interface IGridCell {
 }
 
 /**
+ * Callback for when a list menu option is triggered.
+ * 
+ * @param menuName   Name of the containing menu.
+ */
+export type IListMenuOptionCallback = (menuName: string) => void;
+
+/**
  * Single text option in a list.
  */
 export interface IListMenuOption {
     /**
      * Callback for when the option is triggered.
      */
-    callback?: (menuName: string) => void;
+    callback?: IListMenuOptionCallback;
 
     /**
      * Horizontal and vertical offsets to shift the option by.
