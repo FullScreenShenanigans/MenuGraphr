@@ -673,7 +673,7 @@ export interface IGridCell {
 
 /**
  * Callback for when a list menu option is triggered.
- * 
+ *
  * @param menuName   Name of the containing menu.
  */
 export type IListMenuOptionCallback = (menuName: string) => void;
