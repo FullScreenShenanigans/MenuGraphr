@@ -8,7 +8,7 @@
     "url": "https://github.com/FullScreenShenanigans/MenuGraphr/issues"
   },
   "dependencies": {
-    "eightbittr": "^0.7.14"
+    "eightbittr": "^0.7.15"
   },
   "description": "In-game menu and dialog creation and management for EightBittr.",
   "devDependencies": {
